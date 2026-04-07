@@ -27,10 +27,6 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	#var target_systems: Array[StarSystem] = selection.get_selected_systems()
 	
-	if galaxy.actions_disabled:
-		print("Actions cannot currently be used in this galaxy")
-		return false
-	
 	if self.is_setup_action != galaxy.in_setup:
 		print("Action cannot be used in current galaxy due to setup state")
 		return false

@@ -20,6 +20,12 @@ func process_turn(galaxy: Galaxy, actions_dict: Dictionary) -> Galaxy:
 	
 	#regenerate all faction resources + increase tech levels
 	
-	new_galaxy.current_turn += 1
+	if new_galaxy.in_setup:
+		new_galaxy.setup_index +=1
+		if new_galaxy.setup_index >= new_galaxy.setup_order.size():
+			new_galaxy.in_setup = false
+	
+	if not new_galaxy.in_setup:
+		new_galaxy.current_turn += 1
 	
 	return new_galaxy

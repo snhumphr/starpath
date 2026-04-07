@@ -43,24 +43,28 @@ func _ready() -> void:
 	neutral_player.faction_id = Faction.FACTION_IDS.NONE
 	neutral_player.resigned = true
 	neutral_player.is_hidden = true
+	neutral_player.network_id = -1
 	neutral_player.player_id = 0
 	
 	var test_player: Player = Player.new()
 	test_player.player_name = "Arc"
 	test_player.colour = Color.BLUE
 	test_player.faction_id = Faction.FACTION_IDS.DEVOURER
+	test_player.network_id = 1
 	test_player.player_id = 1
 	
 	self.player_ids = {1 : 1}
 	
 	self.galaxy.players = [neutral_player, test_player]
-	self.galaxy.player_id = 0
+	self.galaxy.player_id = 1
 	self.galaxy.factions[0] = Faction.new()
 	self.galaxy.factions[0].player_id = 0
 	self.galaxy.factions[0].fac_id = Faction.FACTION_IDS.NONE
 	self.galaxy.factions[self.galaxy.player_id] = Eaters.new()
 	self.galaxy.factions[self.galaxy.player_id].init(self.galaxy.player_id)
 	self.galaxy.factions[self.galaxy.player_id].player_id = self.galaxy.player_id
+	
+	self.galaxy.setup_order = self.GalaxyGen.generate_setup_order(self.galaxy)
 	
 	await get_tree().process_frame
 	ActionPanel.init(self.galaxy)
@@ -70,7 +74,7 @@ func _ready() -> void:
 	
 	
 	
-	self.GalaxyGen.place_neutrals(self.galaxy)
+	#self.GalaxyGen.place_neutrals(self.galaxy)
 	self.update_map()
 
 func submit_orders(submitted_actions: Array[FactionAction]) -> void:
@@ -97,6 +101,14 @@ func receive_orders(received_actions: Array[PackedStringArray]) -> void:
 		
 		var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, orders_dict)
 		rpc("receive_turn", new_galaxy)
+	elif galaxy.in_setup:
+		var wanted_network_id: int = -1
+		for player in self.galaxy.players:
+			if player.player_id == self.galaxy.setup_order[self.galaxy.setup_index]:
+				wanted_network_id = player.network_id
+		if self.turn_orders.keys().has(wanted_network_id):
+			var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
+			rpc("receive_turn", new_galaxy)
 
 @rpc("authority", "call_local", "reliable")
 func receive_turn(received_galaxy: Galaxy) -> void:
@@ -308,9 +320,7 @@ func _on_button_pressed() -> void:
 	
 	var end_turn_allowed: bool = true
 	
-	if self.galaxy.actions_disabled and self.action_queue.size() > 0:
-		end_turn_allowed = false
-	elif self.galaxy.in_setup and self.action_queue.size() == 0:
+	if self.galaxy.in_setup and self.action_queue.size() == 0:
 		end_turn_allowed = false
 	else:
 		for action in self.action_queue:

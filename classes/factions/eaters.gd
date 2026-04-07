@@ -53,6 +53,9 @@ func load_actions() -> Array[FactionAction]:
 	
 	var move_action: MoveAction = MoveAction.new()
 	move_action.init()
+	move_action.action_category = "Swarm"
+	move_action.action_name = "Move"
+	move_action.short_desc = "Move 1-9 ships to an adjacent system."
 	eater_actions.append(move_action)
 	
 	return eater_actions

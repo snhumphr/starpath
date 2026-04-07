@@ -11,8 +11,10 @@ class_name Galaxy
 @export var ships: Array[Ship] = []
 
 @export var current_turn: int = 0
+@export var setup_index: int = 0
+@export var setup_order: Array[int] = []
 @export var in_setup: bool = true
-@export var actions_disabled: bool = false
+
 @export var player_id: int
 
 func end_setup() -> void:

@@ -88,9 +88,12 @@ func generate_setup_order(galaxy: Galaxy) -> Array[int]:
 		var player: Player = galaxy.players[index]
 		var player_faction: Faction = galaxy.factions[player.player_id]
 		if not player.is_hidden and not player.resigned:
-			order.append(player_faction.setup_priority+index)
+			order.append(player.player_id)
+			#order.append(player_faction.setup_priority+index)
 	
 	order.sort()
+	
+	#TODO: MAKE THIS ACTUALLY RETURN A LIST OF PLAYER IDS SORTED BY THEIR FACTION PRIORITY
 	
 	return order
 
