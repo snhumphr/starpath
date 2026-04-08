@@ -19,7 +19,7 @@ const FACTION_NAMES: Dictionary = {
 
 @export var player_id: int
 @export var fac_id: FACTION_IDS
-@export var colour: Color = Color.WHITE
+#@export var colour: Color = Color.WHITE
 
 @export var num_actions_per_category: Dictionary = {} #This should contain strings mapped to numbers
 @export var resources: Array[FactionResource]

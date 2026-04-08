@@ -1,4 +1,4 @@
-extends Resource
+extends Action
 class_name FactionAction
 
 @export var action_category: String = "Basic"
@@ -7,7 +7,7 @@ class_name FactionAction
 
 @export var bound_action_selection: ActionSelection
 
-@export var is_action_unique: bool = true #A unique action can only be performed once per turn.
+@export var is_action_unique: bool = false #A unique action can only be performed once per turn.
 @export var action_priority: int = 1 #An action cannot be performed after an action with a higher action priority has been performed that turn
 @export var is_setup_action: bool = false
 
@@ -19,11 +19,11 @@ func get_action_id() -> PackedStringArray:
 func is_action_identical(other_action: FactionAction) -> bool:
 	return self.get_action_id() == other_action.get_action_id()
 
-func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = []) -> bool:
+func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
 	
-	return is_action_valid_base(actor_id, galaxy, selection, action_queue)
+	return is_action_valid_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = []) -> bool:
+func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
 	
 	#var target_systems: Array[StarSystem] = selection.get_selected_systems()
 	
@@ -39,30 +39,36 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	for i in range(0, action_queue.size()):
 		var action: FactionAction = action_queue[i]
-		if self == action:
+		if self == action: #TODO: CHECK THAT THIS ACTUALLY WORKS!
 			own_index = i
 	
 	var actions_by_category: Dictionary = {}
+	
+	if not is_in_queue:
+		actions_by_category[self.action_category] = 1
 	
 	for i in range(0, action_queue.size()):
 		var action: FactionAction = action_queue[i]
 		if not actions_by_category.has(action.action_category):
 			actions_by_category[action.action_category] = 1
 		else:
-			actions_by_category[action.action_category] +=1
-		if i != own_index and self.is_action_unique and self.is_action_identical(action):
-			print("Unique action already selected.")
-			return false
+			actions_by_category[action.action_category] += 1
+		if self.is_action_unique and self.is_action_identical(action):
+			if not is_in_queue or i != own_index:
+				#print("Unique action already selected.")
+				#return false
+				pass
 	
-	if not actions_by_category.has(self.action_category):
-		actions_by_category[self.action_category] = 1
-	else:
-		actions_by_category[self.action_category] += 1
+	#if not actions_by_category.has(self.action_category):
+	#	actions_by_category[self.action_category] = 1
+	#else:
+	#	actions_by_category[self.action_category] += 1
 	
 	var actor_faction: Faction = galaxy.factions[actor_id]
 	
-	if actions_by_category[self.action_category] > actor_faction.num_actions_per_category.get(self.action_category, 0):
-		print("Allowed actions of category " + self.action_category + " exceeded")
+	if actions_by_category.get(self.action_category, 0) > actor_faction.num_actions_per_category.get(self.action_category, 0):
+		
+		print("Allowed actions of category " + self.action_category + " exceeded: Faction only has " + str(actor_faction.num_actions_per_category.get(self.action_category, 0)) + " actions while " + str(actions_by_category[self.action_category]) + " are queued.")
 		return false
 	
 	for i in range(0, own_index):
@@ -78,17 +84,20 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	return true
 
-func is_action_executable(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = []) -> bool:
+func is_action_executable(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
 	
-	return self.is_action_executable_base(actor_id, galaxy, selection, action_queue)
+	return self.is_action_executable_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = []) -> bool:
+func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
 	
 	if selection.selected_systems.size() != self.system_slots.size():
 		print("Not enough systems selected to fill all action's slots")
 		return false
 	
-	return self.is_action_valid(actor_id, galaxy, selection, action_queue)
+	return self.is_action_valid(actor_id, galaxy, selection, action_queue, is_in_queue)
+
+func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+	return ["This action does nothing."]
 
 func reserves_ships() -> bool:
 	return true

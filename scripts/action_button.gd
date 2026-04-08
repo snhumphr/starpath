@@ -30,6 +30,6 @@ func _gui_input(event: InputEvent) -> void:
 	
 	if self.is_clickable and event is InputEventMouseButton and event.is_pressed():
 		#print("Action "+ self.action.action_name + " selected!")
-		get_tree().call_group("game", "emit_signal", "add_action_to_queue", self.action)
+		get_tree().call_group("game", "emit_signal", "change_current_action", self.action)
 		#self.is_selected = true
 		#self.adjust_display_theme()

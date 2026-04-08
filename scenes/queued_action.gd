@@ -7,7 +7,7 @@ func init(new_action: FactionAction, action_index: int) -> void:
 	self.action = new_action
 	self.index = action_index
 	
-	print(new_action.bound_action_selection.selected_systems)
+	#print(new_action.bound_action_selection.selected_systems)
 	
 	self.get_node("PanelContainer/VBoxContainer/HBoxContainer/ActionName").set_text(str(action_index+1) + " " + new_action.action_name)
 	

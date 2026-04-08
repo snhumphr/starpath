@@ -30,7 +30,7 @@ const SYSTEM_RADIUS: float = 36.0
 
 const NEUTRAL_COLOUR: Color = Color.WHITE
 const HIGHLIGHTED_COLOUR: Color = Color.YELLOW
-const SELECTED_COLOUR: Color = Color.WEB_GREEN
+const SELECTED_COLOUR: Color = Color.YELLOW
 
 const RAINBOW: Array[Color] = [
 	NEUTRAL_COLOUR,
@@ -43,12 +43,14 @@ const RAINBOW: Array[Color] = [
 var galaxy: Galaxy
 var highlighted: Dictionary 
 var selected: ActionSelection
+var action_queue: Array[FactionAction]
 
-func init(new_galaxy: Galaxy, new_selected: ActionSelection, new_highlighted: Dictionary = {}) -> Galaxy:
+func init(new_galaxy: Galaxy, new_selected: ActionSelection, new_highlighted: Dictionary = {}, new_actions: Array[FactionAction] = []) -> Galaxy:
 	
 	self.galaxy = new_galaxy
 	self.selected = new_selected
 	self.highlighted = new_highlighted
+	self.action_queue = new_actions
 	
 	self.apply_draw_scale(self.galaxy)
 	self.galaxy.init_display_paths()
@@ -80,7 +82,38 @@ func _draw() -> void:
 		for system in self.galaxy.systems:
 			for neighbour in system.neighbours:
 				var starpath: Array[Vector2] = system.get_starpath(neighbour)
-				if self.highlighted["highlight_type"] == "starpath" and self.highlighted["highlight_id"] == starpath:
+				var system_arrow: bool = false
+				var neighbour_arrow: bool = false
+				
+				for action in action_queue:
+					var system_index: int = -1
+					var neighbour_index: int = -1
+					for index in range(0, action.bound_action_selection.selected_systems.size()):
+						var selected_system: StarSystem = action.bound_action_selection.selected_systems[index]
+						if selected_system.is_system_identical(system):
+							system_index = index
+						elif selected_system.is_system_identical(neighbour):
+							neighbour_index = index
+					if system_index >= 0 and neighbour_index >= 0:
+						if system_index > neighbour_index:
+							system_arrow = true
+						if neighbour_index > system_index:
+							neighbour_arrow = true
+				
+				if system_arrow or neighbour_arrow:
+					self.draw_line(system.pos, neighbour.pos, SELECTED_COLOUR, 4.0, true)
+					if system_arrow:
+						var neigh_to_sys_angle = neighbour.pos.angle_to_point(system.pos)
+						var angle_vector: Vector2 = Vector2.from_angle(neigh_to_sys_angle)
+						var arrow_pos: Vector2 = system.pos - angle_vector * (SYSTEM_RADIUS+2.0+23.0)
+						var arrow_vector_1: Vector2 = angle_vector.rotated(deg_to_rad(90+45))
+						var arrow_vector_2: Vector2 = angle_vector.rotated(deg_to_rad(-45-90))
+						self.draw_line(arrow_pos, arrow_pos + 20.0 * arrow_vector_1, SELECTED_COLOUR, 2.0, true)
+						self.draw_line(arrow_pos, arrow_pos + 20.0 * arrow_vector_2, SELECTED_COLOUR, 2.0, true)
+					if neighbour_arrow:
+						var neigh_to_sys_angle: float = neighbour.pos.angle_to_point(system.pos)
+						var angle_vector: Vector2 = Vector2.from_angle(neigh_to_sys_angle)
+				elif self.highlighted["highlight_type"] == "starpath" and self.highlighted["highlight_id"] == starpath:
 					self.draw_line(system.pos, neighbour.pos, HIGHLIGHTED_COLOUR, 4.0, true)
 				else:
 					self.draw_dashed_line(system.pos, neighbour.pos, NEUTRAL_COLOUR, 0.5, 4.0, true, true)
@@ -88,7 +121,7 @@ func _draw() -> void:
 			
 		for system in self.galaxy.systems:
 			
-			var owner_colour: Color = galaxy.factions[system.faction_id].colour
+			var owner_colour: Color = galaxy.players[system.player_id].colour
 			
 			self.draw_circle(system.pos, SYSTEM_RADIUS+2.0+23.0, Color.BLACK, true, -1.0, true)
 			
@@ -100,6 +133,7 @@ func _draw() -> void:
 			else:
 				self.draw_circle(system.pos, SYSTEM_RADIUS, owner_colour, false, 2.0, true)
 			#self.draw_string(get_theme_default_font(), system.pos, str(system.sys_id))
+			
 			var construction_type: StarSystem.CONSTRUCTIONS
 			construction_type = system.construction
 			#construction_type = StarSystem.CONSTRUCTIONS.values().pick_random()
@@ -130,7 +164,7 @@ func _draw() -> void:
 					
 						var angle: float = num_ships * 360 / max_ships - 90
 						angle = deg_to_rad(angle)
-						var ship_colour: Color = self.galaxy.factions[ship.faction_id].colour
+						var ship_colour: Color = self.galaxy.players[ship.player_id].colour
 						var ship_dir: Vector2 = Vector2(cos(angle), sin(angle))
 				
 						self.draw_line(system.pos+ship_start_radius*ship_dir, system.pos+ship_radius*ship_dir, ship_colour, 1.0, true)

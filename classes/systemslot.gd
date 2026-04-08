@@ -22,15 +22,19 @@ func is_system_valid(galaxy: Galaxy, selection: ActionSelection, index: int, act
 	var ships: int = selection.selected_ships[index]
 	
 	if not self.accepts_own_system and system.player_id == actor_id:
+		print("System not valid because an enemy does not own it.")
 		return false
 	
 	if not self.accepts_enemy_system and system.player_id != actor_id:
+		print("System not valid because an enemy owns it.")
 		return false
 	
 	if ships < self.own_ship_minimum:
+		print("System not valid because not enough ships selected.")
 		return false
 	
 	if ships > self.own_ship_maximum:
+		print("System not valid because too many ships selected.")
 		return false
 	
 	return true

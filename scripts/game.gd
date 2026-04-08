@@ -29,6 +29,7 @@ const KEYBINDS: Array[String] = [
 	"9"
 ]
 
+signal change_current_action(action: FactionAction)
 signal add_action_to_queue(action: FactionAction)
 signal remove_action_from_queue(action_index: int)
 
@@ -80,20 +81,33 @@ func _ready() -> void:
 func submit_orders(submitted_actions: Array[FactionAction]) -> void:
 	
 	var submitted_action_ids: Array[PackedStringArray] = []
+	var selected_system_ids: Array[PackedInt32Array] = []
+	var selected_ship_ids: Array[PackedInt32Array] = []
 	
 	for action in submitted_actions:
 		submitted_action_ids.append(action.get_action_id())
+		selected_system_ids.append(action.bound_action_selection.export_systems_as_ids())
+		selected_ship_ids.append(action.bound_action_selection.export_ships_as_ids())
 	
-	rpc_id(1, "receive_orders", submitted_action_ids)
+	rpc_id(1, "receive_orders", submitted_action_ids, selected_system_ids, selected_ship_ids)
 	self.action_queue = []
 	self.reset_selections()
 	get_tree().call_group("queued_action", "queue_free")
 
 @rpc("any_peer", "call_local", "reliable")
-func receive_orders(received_actions: Array[PackedStringArray]) -> void:
-	self.turn_orders[multiplayer.get_remote_sender_id()] = received_actions
+func receive_orders(received_actions: Array[PackedStringArray], selected_system_ids: Array[PackedInt32Array], selected_ship_ids: Array[PackedInt32Array]) -> void:
+	
+	var received_dict: Dictionary = {}
+	received_dict.action_ids = received_actions
+	received_dict.system_ids = selected_system_ids
+	received_dict.ship_ids = selected_ship_ids
+	
+	self.turn_orders[multiplayer.get_remote_sender_id()] = received_dict
 	
 	if not galaxy.in_setup and self.turn_orders.keys().size() == self.player_ids.size():
+		
+		print(turn_orders)
+		print("^turn orders, pre turn_processor, about to be converted to orders_dict")
 		
 		var orders_dict: Dictionary = {}
 		for key in self.turn_orders.keys():
@@ -108,6 +122,8 @@ func receive_orders(received_actions: Array[PackedStringArray]) -> void:
 				wanted_network_id = player.network_id
 		if self.turn_orders.keys().has(wanted_network_id):
 			var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
+			if not new_galaxy.in_setup:
+				self.GalaxyGen.place_neutrals(new_galaxy)
 			rpc("receive_turn", new_galaxy)
 
 @rpc("authority", "call_local", "reliable")
@@ -120,7 +136,7 @@ func receive_turn(received_galaxy: Galaxy) -> void:
 	self.update_map()
 
 func update_map() -> void:
-	self.galaxy = MapFrame.init(self.galaxy, self.selections, self.highlighted)
+	self.galaxy = MapFrame.init(self.galaxy, self.selections, self.highlighted, self.action_queue)
 
 func reset_highlight() -> void:
 	
@@ -133,8 +149,8 @@ func add_system_to_selection(new_system: StarSystem) ->bool:
 	
 	var is_selected: bool = self.selections.add_system(self.galaxy, new_system)
 	
-	if self.current_action != null:
-		self.emit_signal("add_action_to_queue", self.current_action)
+	#if self.current_action != null:
+	#	self.emit_signal("add_action_to_queue", self.current_action)
 	
 	self.update_action_buttons()
 	
@@ -153,7 +169,7 @@ func update_action_buttons() -> void:
 			if self.current_action != null and self.current_action.is_action_identical(node.action):
 				node.is_clickable = false
 				node.is_selected = true
-			elif node.action.is_action_valid(galaxy.player_id, galaxy, self.selections, self.action_queue):
+			elif node.action.is_action_valid(galaxy.player_id, galaxy, self.selections, self.action_queue, false):
 				node.is_clickable = true
 				node.is_selected = false
 			else:
@@ -263,7 +279,7 @@ func _gui_input(event: InputEvent) -> void:
 	
 		#print(self.highlighted["highlight_id"])
 
-func _on_add_action_to_queue(action: FactionAction) -> void:
+func _on_change_current_action(action: FactionAction) -> void:
 	
 	var are_previous_actions_executable: bool = true
 	
@@ -272,9 +288,25 @@ func _on_add_action_to_queue(action: FactionAction) -> void:
 			are_previous_actions_executable = false
 			break
 	
-	if are_previous_actions_executable and action.is_action_executable(galaxy.player_id, galaxy, self.selections, self.action_queue):
-		self.action_queue.append(action)
-		action.bound_action_selection = self.selections.duplicate()
+	if are_previous_actions_executable and action.is_action_valid(galaxy.player_id, galaxy, self.selections, self.action_queue, false):
+		self.current_action = action
+		self.update_action_buttons()
+		print("Set action " + action.action_name + " as current action.")
+
+func _on_add_action_to_queue(action_to_add: FactionAction) -> void:
+	
+	var are_previous_actions_executable: bool = true
+	
+	for prev_action in self.action_queue:
+		if not prev_action.is_action_executable(galaxy.player_id, galaxy, prev_action.bound_action_selection, self.action_queue):
+			are_previous_actions_executable = false
+			break
+	
+	if are_previous_actions_executable and action_to_add.is_action_executable(galaxy.player_id, galaxy, self.selections, self.action_queue, false):
+		var new_action: FactionAction = action_to_add.duplicate()
+		self.action_queue.append(new_action)
+		new_action.bound_action_selection = ActionSelection.new()
+		new_action.bound_action_selection.load_selection(galaxy, self.selections.export_systems_as_ids(), self.selections.export_ships_as_ids())
 		self.current_action = null
 		self.reset_selections()
 		self.update_map()
@@ -284,16 +316,17 @@ func _on_add_action_to_queue(action: FactionAction) -> void:
 		
 		var queue_scene = load("res://scenes/queued_action.tscn")
 		var instance = queue_scene.instantiate()
-		instance.init(action, current_action_index)
+		instance.init(new_action, current_action_index)
 		self.get_node("GameBox/MainScreen/VBoxContainer/QueuePanel/ActionQueue").add_child(instance)
 		
-		print("Added action " + action.action_name + " to action queue!")
-	elif are_previous_actions_executable and action.is_action_valid(galaxy.player_id, galaxy, self.selections, self.action_queue):
-		self.current_action = action
-		self.update_action_buttons()
-		print("Set action " + action.action_name + " as current action.")
+		print("Added action " + new_action.action_name + " to action queue!")
+		
+		for test_action in action_queue:
+			print(test_action.bound_action_selection)
+			#print(test_action.bound_action_selection.export_systems_as_ids())
+		
 	else:
-		print("Failed to add action " + action.action_name + " to action queue...")
+		print("Failed to add action " + action_to_add.action_name + " to action queue...")
 
 func _on_remove_action_from_queue(action_index: int) -> void:
 
@@ -309,6 +342,8 @@ func _on_remove_action_from_queue(action_index: int) -> void:
 			get_tree().call_group("queued_action", "queue_free")
 			for action in new_action_queue:
 				self.emit_signal("add_action_to_queue", action)
+		
+		self.update_action_buttons()
 
 func _on_button_pressed() -> void:
 	
@@ -333,3 +368,7 @@ func _on_button_pressed() -> void:
 		self.submit_orders(action_queue)
 	else:
 		print("Turn could not be submitted: Some selected actions are invalid.")
+
+func _on_queue_button_pressed() -> void:
+	if self.current_action != null:
+		self.emit_signal("add_action_to_queue", current_action)
