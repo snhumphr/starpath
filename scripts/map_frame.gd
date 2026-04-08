@@ -161,13 +161,19 @@ func _draw() -> void:
 			var ship_radius: float = ship_start_radius + 12.0
 	
 			var num_ships: int = 0
+			var num_reserved_ships: int = galaxy.get_reserved_ships(system.sys_id, action_queue)
+			
+			#TODO: check highlighted ships in the selection as well
 	
 			for player_id in ships_dict.keys():
-				for ship in ships_dict[player_id]:
-					
+				for i in range(0, ships_dict[player_id].size()):
+						var ship: Ship = ships_dict[player_id][i]
 						var angle: float = num_ships * 360 / max_ships - 90
 						angle = deg_to_rad(angle)
 						var ship_colour: Color = self.galaxy.players[ship.player_id].colour
+						if player_id == galaxy.player_id and i < num_reserved_ships:
+							ship_colour = SELECTED_COLOUR
+						
 						var ship_dir: Vector2 = Vector2(cos(angle), sin(angle))
 				
 						self.draw_line(system.pos+ship_start_radius*ship_dir, system.pos+ship_radius*ship_dir, ship_colour, 1.0, true)

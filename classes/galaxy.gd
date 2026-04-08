@@ -88,6 +88,18 @@ func get_ships_in_system(sys_id: int) -> Dictionary:
 	
 	return ship_dict
 
+func get_reserved_ships(sys_id: int, action_queue: Array[FactionAction]) -> int:
+	#var friendly_ships: Array = self.get_ships_in_system(sys_id).get(self.player_id, [])
+	var num_reserved_ships: int = 0
+	
+	for action in action_queue:
+		if action.reserves_ships():
+			for i in range(0, action.bound_action_selection.selected_systems.size()):
+				if action.bound_action_selection.selected_systems[i].sys_id == sys_id:
+					num_reserved_ships += action.bound_action_selection.selected_ships[i]
+	
+	return num_reserved_ships
+
 func get_ships_by_system() -> Dictionary:
 	
 	var ship_dict: Dictionary = {}

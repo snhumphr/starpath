@@ -159,6 +159,7 @@ theme_override_constants/margin_right = 7
 [node name="Button" type="Button" parent="GameBox/BottomBar/MarginContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = ExtResource("3_fc0e3")
 theme_override_styles/normal_mirrored = ExtResource("3_fc0e3")

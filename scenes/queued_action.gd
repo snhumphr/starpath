@@ -17,7 +17,18 @@ func init(new_action: FactionAction, action_index: int) -> void:
 	for system in self.action.bound_action_selection.selected_systems:
 		selected_system_ids.append(str(system.sys_id))
 	
+	var num_ships: int = 0
+	for ship in self.action.bound_action_selection.selected_ships:
+		num_ships += ship
+	
 	if selected_system_ids.size() > 0:
+		
+		if num_ships > 0:
+			selection_desc += "(" + str(num_ships) + " ship"
+			if num_ships > 1:
+				selection_desc += "s"
+			selection_desc += ") "
+		
 		selection_desc += "System"
 		if selected_system_ids.size() > 1:
 			selection_desc += "s"

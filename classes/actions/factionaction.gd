@@ -55,19 +55,15 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 			actions_by_category[action.action_category] += 1
 		if self.is_action_unique and self.is_action_identical(action):
 			if not is_in_queue or i != own_index:
-				#print("Unique action already selected.")
-				#return false
-				pass
+				print("Unique action already selected.")
+				return false
 	
-	#if not actions_by_category.has(self.action_category):
-	#	actions_by_category[self.action_category] = 1
-	#else:
+	#if not is_in_queue:
 	#	actions_by_category[self.action_category] += 1
 	
 	var actor_faction: Faction = galaxy.factions[actor_id]
 	
-	if actions_by_category.get(self.action_category, 0) > actor_faction.num_actions_per_category.get(self.action_category, 0):
-		
+	if actions_by_category[self.action_category] > actor_faction.num_actions_per_category.get(self.action_category, 0):
 		print("Allowed actions of category " + self.action_category + " exceeded: Faction only has " + str(actor_faction.num_actions_per_category.get(self.action_category, 0)) + " actions while " + str(actions_by_category[self.action_category]) + " are queued.")
 		return false
 	

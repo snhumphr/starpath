@@ -37,7 +37,7 @@ func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, 
 				print("Cannot move between system " + system_1.get_system_name() + " and " + system_2.get_system_name() + ", they are not adjacent.")
 				return false
 	
-	return self.is_action_valid_base(actor_id, galaxy, selection, action_queue)
+	return self.is_action_valid_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
 func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
 	
