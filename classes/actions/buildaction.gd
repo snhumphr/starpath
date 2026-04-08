@@ -25,7 +25,7 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -
 		if self.ships_built > 0:
 			for i in range(0, self.ships_built):
 				galaxy.add_ship(system.sys_id, galaxy.players[actor_id].faction_id, actor_id)
-			execution_message.append(str(self.ships_built) + " ships built at " + system.get_system_name())
+			execution_message.append("    " +str(self.ships_built) + " ships built at " + system.get_system_name())
 		elif self.ships_built < 0:
 			pass #TODO: implement consuming ships to build things when implementing Ancients
 	
@@ -35,10 +35,10 @@ func get_construction_message(system: StarSystem) -> String:
 	
 	match self.construction_type:	
 		StarSystem.CONSTRUCTIONS.SHIPYARD:
-			return "Shipyard constructed at " + system.get_system_name()
+			return "    " +"Shipyard constructed at " + system.get_system_name()
 		StarSystem.CONSTRUCTIONS.LAB:
-			return "Laboratory constructed at " + system.get_system_name()
+			return "    " +"Laboratory constructed at " + system.get_system_name()
 		StarSystem.CONSTRUCTIONS.FORTRESS:
-			return "Fortress constructed at " + system.get_system_name()
+			return "    " +"Fortress constructed at " + system.get_system_name()
 		_:
-			return "Construction demolished at " + system.get_system_name()
+			return "    " +"Construction demolished at " + system.get_system_name()

@@ -94,13 +94,19 @@ func _draw() -> void:
 							system_index = index
 						elif selected_system.is_system_identical(neighbour):
 							neighbour_index = index
+					
+					if system_index < 0 or neighbour_index < 0:
+						system_index = -1
+						neighbour_index = -1
+						#TODO: also draw an arrow between systems if they're highlighted in the right order
+					
 					if system_index >= 0 and neighbour_index >= 0:
 						if system_index > neighbour_index:
 							system_arrow = true
 						if neighbour_index > system_index:
 							neighbour_arrow = true
 				
-				if system_arrow or neighbour_arrow:
+				if system_arrow:
 					self.draw_line(system.pos, neighbour.pos, SELECTED_COLOUR, 4.0, true)
 					if system_arrow:
 						var neigh_to_sys_angle = neighbour.pos.angle_to_point(system.pos)
@@ -110,9 +116,6 @@ func _draw() -> void:
 						var arrow_vector_2: Vector2 = angle_vector.rotated(deg_to_rad(-45-90))
 						self.draw_line(arrow_pos, arrow_pos + 20.0 * arrow_vector_1, SELECTED_COLOUR, 2.0, true)
 						self.draw_line(arrow_pos, arrow_pos + 20.0 * arrow_vector_2, SELECTED_COLOUR, 2.0, true)
-					if neighbour_arrow:
-						var neigh_to_sys_angle: float = neighbour.pos.angle_to_point(system.pos)
-						var angle_vector: Vector2 = Vector2.from_angle(neigh_to_sys_angle)
 				elif self.highlighted["highlight_type"] == "starpath" and self.highlighted["highlight_id"] == starpath:
 					self.draw_line(system.pos, neighbour.pos, HIGHLIGHTED_COLOUR, 4.0, true)
 				else:

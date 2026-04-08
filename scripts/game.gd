@@ -123,7 +123,8 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 		if self.turn_orders.keys().has(wanted_network_id):
 			var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
 			if not new_galaxy.in_setup:
-				self.GalaxyGen.place_neutrals(new_galaxy)
+				#self.GalaxyGen.place_neutrals(new_galaxy)
+				pass
 			rpc("receive_turn", new_galaxy)
 
 @rpc("authority", "call_local", "reliable")
@@ -214,11 +215,17 @@ func is_pos_along_starpath(pos: Vector2) -> Array[Vector2]:
 	
 	return []
 
-func _gui_input(event: InputEvent) -> void:
-	
-	pass
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("clear"):
+		self.reset_selections()
+		self.update_map()
+	elif event.is_action_pressed("queue"):
+		if self.current_action != null:
+			self.emit_signal("add_action_to_queue", current_action)
+	elif event.is_action_pressed("submit"):
+		self._on_button_pressed()
 
-#func _input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseMotion:
 		var pos: Vector2 = event.position
