@@ -38,3 +38,11 @@ func calculate_tech_level() -> int:
 		tech_level += 1
 	
 	return tech_level 
+
+func increase_tech_points(amount: int) -> int: #Returns the number of tech levels gained from this increase
+	
+	var old_tech_level: int = self.calculate_tech_level()
+	self.tech_points += amount
+	var new_tech_level: int = self.calculate_tech_level()
+	
+	return new_tech_level - old_tech_level

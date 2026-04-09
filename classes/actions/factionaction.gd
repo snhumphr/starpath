@@ -14,6 +14,9 @@ class_name FactionAction
 
 @export var system_slots: Array[SystemSlot] = []
 
+@export var custom_validity_checks: Array[Callable] = []
+@export var custom_execution_actions: Array[Callable] = []
+
 func get_action_id() -> PackedStringArray:
 	return PackedStringArray([self.action_name, self.action_category, self.short_desc])
 
@@ -24,7 +27,7 @@ func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, 
 	
 	return is_action_valid_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
+func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool: #TODO: remove default arguments from the 'base' functions to reduce future incidents
 	
 	#var target_systems: Array[StarSystem] = selection.get_selected_systems()
 	
@@ -36,12 +39,13 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 		print("Too many systems selected")
 		return false
 	
-	var own_index: int = 0
+	var own_index: int = action_queue.size()
 	
 	for i in range(0, action_queue.size()):
 		var action: FactionAction = action_queue[i]
 		if self == action: #TODO: CHECK THAT THIS ACTUALLY WORKS!
 			own_index = i
+	
 	
 	var actions_by_category: Dictionary = {}
 	
@@ -79,6 +83,12 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 			print("Selected systems not valid for action's slots")
 			return false
 	
+	for function in self.custom_validity_checks:
+		var error_message: String = function.call(self, actor_id, galaxy, selection, action_queue, is_in_queue)
+		if error_message != "":
+			print(error_message)
+			return false
+	
 	return true
 
 func is_action_executable(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
@@ -94,7 +104,21 @@ func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionS
 	return self.is_action_valid(actor_id, galaxy, selection, action_queue, is_in_queue)
 
 func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
-	return ["This action does nothing."]
+	
+	var execution_log: Array[String] = []
+	
+	execution_log += self.execute_action_base(galaxy, selection, actor_id)
+	
+	return execution_log
+
+func execute_action_base(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+	
+	var execution_log: Array[String] = []
+	
+	for function in self.custom_execution_actions:
+		execution_log += function.call(self, galaxy, selection, actor_id)
+	
+	return execution_log
 
 func reserves_ships() -> bool:
 	return self.reserves_selected_ships

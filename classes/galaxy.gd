@@ -67,7 +67,7 @@ func init_display_paths() -> void:
 func get_systems_owned_by_player(owning_player_id: int) -> Array[StarSystem]:
 	
 	var owned_systems: Array[StarSystem] = []
-	var owning_fac_id: Faction.FACTION_IDS = self.factions[owning_player_id]
+	var owning_fac_id: Faction.FACTION_IDS = self.factions[owning_player_id].fac_id
 	
 	for system in self.systems:
 		if system.player_id == owning_player_id and system.faction_id == owning_fac_id:

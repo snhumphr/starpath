@@ -20,6 +20,7 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		else:
 			action_list = player_faction.actions
 		
+		print("Processing " + new_galaxy.players[player_id].player_name + "'s turn...")
 		var index: int = 0
 		for action_id in orders_dict[player_id].action_ids:
 			
@@ -55,12 +56,13 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		for player_id in actions_dict.keys():
 			var action_queue: Array[FactionAction] = actions_dict[player_id]
 			for action in action_queue:
-				if action.is_action_executable(player_id, new_galaxy, action.bound_action_selection, action_queue):
-					turn_report.append(new_galaxy.players[player_id].player_name + " executing action " + action.action_name + ".")
-					for entry in action.execute_action(new_galaxy, action.bound_action_selection, player_id):
-						turn_report.append(entry)
-				else:
-					turn_report.append(new_galaxy.players[player_id].player_name + "'s action " + action.action_name + " failed to execute.")
+				if action.action_priority == current_priority:
+					if action.is_action_executable(player_id, new_galaxy, action.bound_action_selection, action_queue):
+						turn_report.append(new_galaxy.players[player_id].player_name + " executing action " + action.action_name + ".")
+						for entry in action.execute_action(new_galaxy, action.bound_action_selection, player_id):
+							turn_report.append(entry)
+					else:
+						turn_report.append(new_galaxy.players[player_id].player_name + "'s action " + action.action_name + " failed to execute.")
 		
 		current_priority += 1
 	
@@ -73,6 +75,7 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 			var occupier_id: int = occupying_ships.keys()[0]
 			if system.player_id != occupier_id:
 				system.player_id = occupier_id
+				system.faction_id = new_galaxy.players[occupier_id].faction_id
 				turn_report.append(new_galaxy.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
 				if new_galaxy.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
 					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
