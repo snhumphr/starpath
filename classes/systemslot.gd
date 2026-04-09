@@ -37,4 +37,8 @@ func is_system_valid(galaxy: Galaxy, selection: ActionSelection, index: int, act
 		print("System not valid because too many ships selected.")
 		return false
 	
+	if not self.allowed_constructions.has(system.construction):
+		print("System not valid because wrong type of construction.")
+		return false
+	
 	return true

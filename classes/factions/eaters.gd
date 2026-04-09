@@ -7,6 +7,7 @@ func init(new_player_id: int) -> void:
 	self.actions = self.load_actions()
 	self.setup_actions = self.load_setup_actions()
 	self.setup_priority = 20
+	self.tech_points = Faction.TRIANGLE_MULT + 1
 	self.num_actions_per_category = {
 		"Setup": 1,
 		"Basic": 1,
@@ -33,11 +34,12 @@ func load_setup_actions() -> Array[FactionAction]:
 	var eater_setup: Array[FactionAction] = []
 	
 	var place_hive: FactionAction = BuildAction.new()
+	place_hive.init()
 	place_hive.action_name = "Place Hive"
 	place_hive.action_category = "Setup"
 	place_hive.is_setup_action = true
 	place_hive.is_action_unique = true
-	place_hive.system_slots = [place_hive.starting_system_slot()]
+	place_hive.reserves_selected_ships = false
 	place_hive.system_slots[0].accepts_enemy_system = true
 	place_hive.construction_type = StarSystem.CONSTRUCTIONS.FORTRESS
 	place_hive.ships_built = 9
@@ -57,5 +59,13 @@ func load_actions() -> Array[FactionAction]:
 	move_action.action_name = "Move"
 	move_action.short_desc = "Move 1-9 ships to an adjacent system."
 	eater_actions.append(move_action)
+	
+	var spawn_action: BuildAction = BuildAction.new()
+	spawn_action.init()
+	spawn_action.action_category = "Swarm"
+	spawn_action.action_name = "Spawn"
+	spawn_action.short_desc = "Builds 1 ship in an owned empty system."
+	spawn_action.ships_built = 1
+	eater_actions.append(spawn_action)
 	
 	return eater_actions

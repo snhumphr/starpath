@@ -14,7 +14,7 @@ func add_system(galaxy: Galaxy, new_system: StarSystem, action_queue: Array[Fact
 		
 		self.selected_ships.append(0)
 		
-		self.add_ship(galaxy, new_system, action_queue)
+		#self.add_ship(galaxy, new_system, action_queue)
 		
 		return true
 
@@ -54,6 +54,20 @@ func add_ship(galaxy: Galaxy, system: StarSystem, action_queue: Array[FactionAct
 		
 		if friendly_ships.size() > num_ships_reserved + self.selected_ships[index]:
 			self.selected_ships[index] += 1
+		else:
+			self.selected_ships[index] = 0
+	else:
+		printerr("Invalid system id " + str(system.sys_id))
+
+func remove_ship(galaxy: Galaxy, system: StarSystem, action_queue: Array[FactionAction]) -> void:
+	
+	var index: int = self.get_system_index(galaxy, system)
+	
+	if index != -1:
+		if self.selected_ships[index] > 1:
+			self.selected_ships[index] -= 1
+		else:
+			self.selected_ships[index] = 1
 	else:
 		printerr("Invalid system id " + str(system.sys_id))
 

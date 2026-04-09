@@ -3,7 +3,7 @@ class_name MoveAction
 
 func init() -> void:
 	
-	self.action_priority = 2 # Move actions prevent future building/researching/etc from happening
+	self.action_priority = 10 # Move actions prevent future shipbuilding/construction/etc from happening
 	self.system_slots = [self.starting_system_slot(), self.dest_system_slot()]
 
 func starting_system_slot() -> SystemSlot:

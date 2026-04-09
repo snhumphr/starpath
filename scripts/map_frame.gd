@@ -163,7 +163,9 @@ func _draw() -> void:
 			var num_ships: int = 0
 			var num_reserved_ships: int = galaxy.get_reserved_ships(system.sys_id, action_queue)
 			
-			#TODO: check highlighted ships in the selection as well
+			for i in range(0, selected.selected_systems.size()):
+				if system.sys_id == selected.selected_systems[i].sys_id:
+					num_reserved_ships += selected.selected_ships[i]
 	
 			for player_id in ships_dict.keys():
 				for i in range(0, ships_dict[player_id].size()):

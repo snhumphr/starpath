@@ -24,6 +24,8 @@ func init(galaxy: Galaxy) -> void:
 	
 	get_tree().call_group("action_button", "queue_free")
 	
+	print(actions_dict)
+	
 	for key in actions_dict.keys():
 		#TODO: sort the actions here
 		
@@ -33,7 +35,7 @@ func init(galaxy: Galaxy) -> void:
 		label.add_to_group("action_button")
 		self.get_node("VBoxContainer").add_child(label)
 		
-		for i in range(0, actions_dict.size()):
+		for i in range(0, actions_dict[key].size()):
 			var button_scene = load("res://scenes/action_button.tscn")
 			var instance = button_scene.instantiate()
 			instance.init(actions_dict[key][i])

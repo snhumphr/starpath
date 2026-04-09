@@ -7,6 +7,7 @@ class_name FactionAction
 
 @export var bound_action_selection: ActionSelection
 
+@export var reserves_selected_ships: bool = true
 @export var is_action_unique: bool = false #A unique action can only be performed once per turn.
 @export var action_priority: int = 1 #An action cannot be performed after an action with a higher action priority has been performed that turn
 @export var is_setup_action: bool = false
@@ -96,4 +97,4 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -
 	return ["This action does nothing."]
 
 func reserves_ships() -> bool:
-	return true
+	return self.reserves_selected_ships

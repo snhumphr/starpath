@@ -4,12 +4,18 @@ class_name BuildAction
 @export var construction_type: StarSystem.CONSTRUCTIONS = StarSystem.CONSTRUCTIONS.EMPTY
 @export var ships_built: int = 0
 
+func init() -> void:
+	self.action_priority = 1
+	self.system_slots = [self.starting_system_slot()]
+	self.reserves_selected_ships = false
+
 func starting_system_slot() -> SystemSlot:
 	
 	var slot: SystemSlot = SystemSlot.new()
 	
 	slot.accepts_enemy_system = false
 	slot.allowed_constructions = [StarSystem.CONSTRUCTIONS.EMPTY]
+	slot.own_ship_maximum = 0
 	
 	return slot
 

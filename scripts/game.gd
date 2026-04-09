@@ -251,7 +251,7 @@ func _input(event: InputEvent) -> void:
 			if self.current_action != null:
 				self.emit_signal("add_action_to_queue", current_action)
 		elif event.is_action("submit"):
-			#self.attempt_submit_turn()
+			self.attempt_submit_turn()
 			pass
 
 func _gui_input(event: InputEvent) -> void:
@@ -288,11 +288,15 @@ func _gui_input(event: InputEvent) -> void:
 				var is_selected: bool = self.add_system_to_selection(system)
 				if not is_selected:
 					selections.add_ship(galaxy, system, action_queue)
-					pass
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				selections.remove_system(galaxy, system)
-				self.update_action_buttons()
-			
+			elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				if self.selections.get_system_index(galaxy, system) != -1:
+					selections.add_ship(galaxy, system, action_queue)
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				if self.selections.get_system_index(galaxy, system) != -1:
+					selections.remove_ship(galaxy, system, action_queue)
+			self.update_action_buttons()
 		elif self.highlighted["highlight_type"] == "starpath":
 			
 			var starpath_systems: Array[StarSystem] = self.galaxy.get_systems_from_starpath(self.highlighted["highlight_id"])
@@ -301,17 +305,14 @@ func _gui_input(event: InputEvent) -> void:
 				var latest_system: StarSystem = self.selections.selected_systems.back()
 				if starpath_systems[0].is_system_identical(latest_system):
 					var is_selected: bool = self.add_system_to_selection(starpath_systems[1])
-					if not is_selected:
-						selections.add_ship(galaxy, starpath_systems[1], action_queue)
-					self.update_map()
+					#if not is_selected:
+					#	selections.add_ship(galaxy, starpath_systems[1], action_queue)
 				elif starpath_systems[1].is_system_identical(latest_system):
 					var is_selected: bool = self.add_system_to_selection(starpath_systems[0])
-					if not is_selected:
-						selections.add_ship(galaxy, starpath_systems[0], action_queue)
-					self.update_map()
-			
-			#print(self.highlighted["highlight_id"])
-		#self.update_map()
+					#if not is_selected:
+					#	selections.add_ship(galaxy, starpath_systems[0], action_queue)
+		
+		self.update_map()
 	#TODO: allow using the mouse scroll wheel to increase/decrease selected ships in the highlighted system
 	
 		#print(self.highlighted["highlight_id"])

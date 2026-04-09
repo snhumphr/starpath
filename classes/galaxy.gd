@@ -75,6 +75,18 @@ func get_systems_owned_by_player(owning_player_id: int) -> Array[StarSystem]:
 	
 	return owned_systems
 
+func get_constructions_owned_by_player(owning_player_id: int) -> Dictionary:
+	
+	var construction_dict: Dictionary = {}
+	var owned_systems: Array[StarSystem] = self.get_systems_owned_by_player(owning_player_id)
+	for system in owned_systems:
+		if not construction_dict.has(system.construction):
+			construction_dict[system.construction] = [system.sys_id]
+		else:
+			construction_dict[system.construction].append(system.sys_id)
+	
+	return construction_dict
+
 func get_ships_in_system(sys_id: int) -> Dictionary:
 	
 	var ship_dict: Dictionary = {}
