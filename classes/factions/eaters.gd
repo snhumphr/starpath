@@ -17,7 +17,7 @@ func init(new_player_id: int) -> void:
 func full_description() -> String:
 	var description: String = ""
 	
-	description += "The EATERS" + "\n" #TODO: change the name in case of mirror matches
+	description += "The EATERS" + "\n"
 	description += "DIFFICULTY: LOW" + "\n"
 	description += "COMBAT STRENGTH: HIGH" + "\n"
 	description += "TECHNOLOGY: VERY LOW" + "\n"
@@ -132,7 +132,7 @@ func proliferate_execution(executing_action: FactionAction, galaxy: Galaxy, sele
 	var execution_log: Array[String]  = []
 	
 	var hive_system_id: int = galaxy.get_constructions_owned_by_player(actor_id)[StarSystem.CONSTRUCTIONS.FORTRESS][0]
-	var hive_system: StarSystem = galaxy.get_system_from_id(hive_system_id) #TODO: double check that you aren't using galaxy.systems[sys_id] elsewhere
+	var hive_system: StarSystem = galaxy.get_system_from_id(hive_system_id)
 	
 	for system in galaxy.get_systems_owned_by_player(actor_id):
 		var num_ships: int = executing_action.ships_built

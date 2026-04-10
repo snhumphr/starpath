@@ -129,3 +129,29 @@ func add_ship(sys_id: int, faction_id: Faction.FACTION_IDS, owner_id: int) -> vo
 	new_ship.system_id = sys_id
 	
 	self.ships.append(new_ship)
+
+func move_ship(start_sys_id: int, owner_id: int, dest_id: int) -> void:
+	
+	for i in range(0, self.ships.size()):
+		var ship: Ship = self.ships[i]
+		if ship.system_id == start_sys_id and ship.player_id == owner_id:
+			self.ships[i].system_id = dest_id
+			break
+
+func destroy_ship(sys_id: int, owner_id: int) -> void:
+	
+	for i in range(0, self.ships.size()):
+		var ship: Ship = self.ships[i]
+		if ship.system_id == sys_id and ship.player_id == owner_id:
+			self.ships.remove_at(i)
+			break
+
+func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
+	
+	var fleet_strength: int = 0
+	
+	fleet_strength += ships.size()
+	
+	fleet_strength += self.factions[player_id].calculate_tech_level() #TODO: TESTING *DEFINITELY* NEEDED HERE!!!
+	
+	return fleet_strength

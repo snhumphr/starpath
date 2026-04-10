@@ -148,7 +148,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 		if self.turn_orders.keys().has(wanted_network_id):
 			var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
 			if not new_galaxy.in_setup:
-				#self.GalaxyGen.place_neutrals(new_galaxy)
+				self.GalaxyGen.place_neutrals(new_galaxy)
 				pass
 			rpc("receive_turn", new_galaxy)
 
@@ -251,7 +251,7 @@ func _input(event: InputEvent) -> void:
 			if self.current_action != null:
 				self.emit_signal("add_action_to_queue", current_action)
 		elif event.is_action("submit"):
-			self.attempt_submit_turn()
+			#self.attempt_submit_turn()
 			pass
 
 func _gui_input(event: InputEvent) -> void:
@@ -313,7 +313,6 @@ func _gui_input(event: InputEvent) -> void:
 					#	selections.add_ship(galaxy, starpath_systems[0], action_queue)
 		
 		self.update_map()
-	#TODO: allow using the mouse scroll wheel to increase/decrease selected ships in the highlighted system
 	
 		#print(self.highlighted["highlight_id"])
 
@@ -372,7 +371,7 @@ func _on_remove_action_from_queue(action_index: int) -> void:
 			
 		if new_action_queue.size() < self.action_queue.size():
 			self.action_queue = []
-			#TODO: figure out whether the current action/selection should also be reset
+			#TODO: make it so that this actually does what it's supposed to instead of just clearing the entire queue
 			get_tree().call_group("queued_action", "queue_free")
 			for action in new_action_queue:
 				self.emit_signal("add_action_to_queue", action)

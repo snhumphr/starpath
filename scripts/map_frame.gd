@@ -120,7 +120,6 @@ func _draw() -> void:
 					self.draw_line(system.pos, neighbour.pos, HIGHLIGHTED_COLOUR, 4.0, true)
 				else:
 					self.draw_dashed_line(system.pos, neighbour.pos, NEUTRAL_COLOUR, 0.5, 4.0, true, true)
-				#TODO: draw the starpath in green if the selection has exactly the two systems in the starpath selected
 			
 		for system in self.galaxy.systems:
 			

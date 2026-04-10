@@ -8,7 +8,7 @@ func init(new_player_id: int) -> void:
 func full_description() -> String:
 	var description: String = ""
 	
-	description += "The IMMORTAL EMPIRE" + "\n" #TODO: change the name in case of mirror matches
+	description += "The IMMORTAL EMPIRE" + "\n"
 	description += "DIFFICULTY: MODERATE" + "\n"
 	description += "COMBAT STRENGTH: MODERATE" + "\n"
 	description += "TECHNOLOGY: MODERATE" + "\n"

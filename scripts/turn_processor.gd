@@ -6,7 +6,6 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 	
 	print("Processing turn...")
 	
-	#TODO: very robust correctness checking on submitted orders
 	print(orders_dict)
 	var actions_dict: Dictionary = {}
 	var lowest_priority: int = 100
@@ -68,6 +67,41 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 	
 	#combat phase
 	
+	var battlefield_system_ids: Array[int] = []
+	var battle_results: Dictionary = {}
+	var battle_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	battle_rng.randomize()
+	
+	for system in new_galaxy.systems:
+		var occupying_ships = new_galaxy.get_ships_in_system(system.sys_id)
+		if occupying_ships.keys().size() > 1:
+			battlefield_system_ids.append(system.sys_id)
+			battle_results[system.sys_id] = self.process_battle(new_galaxy, system, battle_rng)
+	
+	print(battle_results)
+	
+	for sys_id in battle_results.keys():
+		var system: StarSystem = new_galaxy.get_system_from_id(sys_id)
+		for player_id in battle_results[sys_id].keys():
+			for i in range(0, battle_results[sys_id][player_id].destroyed):
+				new_galaxy.destroy_ship(sys_id, player_id)
+			
+			var retreat_system_ids: Array[int] = []
+			
+			for i in range(0, system.neighbours.size()):
+				var neighbour: StarSystem = system.neighbours[i]
+				if not battlefield_system_ids.has(neighbour.sys_id) and neighbour.player_id == player_id:
+					retreat_system_ids.append(neighbour.sys_id)
+			
+			for i in range(0, battle_results[sys_id][player_id].retreating):
+				if i < retreat_system_ids.size():
+					new_galaxy.move_ship(sys_id, player_id, retreat_system_ids[i])
+					print("voyote vowel")
+				else:
+					new_galaxy.destroy_ship(sys_id, player_id)
+	
+	#TODO: make a nice neat battle log for the turn report!
+	
 	#systems change ownership here, usually destroying enemy buildings
 	for system in new_galaxy.systems:
 		var occupying_ships = new_galaxy.get_ships_in_system(system.sys_id)
@@ -96,3 +130,49 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		new_galaxy.current_turn += 1
 	
 	return new_galaxy
+
+func process_battle(galaxy: Galaxy, system: StarSystem, battle_rng: RandomNumberGenerator) -> Dictionary:
+	
+	var victor_ids: Array[int] = []
+	var highest_fleet_strength: int = 0
+	var combatant_ships: Dictionary = galaxy.get_ships_in_system(system.sys_id) #TODO: account for stealthed ships
+	
+	for player_id in combatant_ships.keys():
+		var ships_array: Array[Ship] = []
+		for ship in combatant_ships[player_id]:
+			ships_array.append(ship)
+		var fleet_strength: int = galaxy.calculate_fleet_strength(player_id, ships_array)
+		if fleet_strength > highest_fleet_strength:
+			highest_fleet_strength = fleet_strength
+			victor_ids = [player_id]
+		elif fleet_strength == highest_fleet_strength:
+			victor_ids.append(player_id)
+	
+	var victor_index: int = battle_rng.randi() % victor_ids.size()
+	var victor_id: int = victor_ids[victor_index]
+	
+	var results_dict: Dictionary = {}
+	
+	for player_id in combatant_ships.keys():
+		var num_ships = combatant_ships[player_id].size()
+		var num_retreating: int = 0
+		var num_destroyed: int = 0
+		if player_id != victor_id:
+			num_destroyed = ceili(num_ships / 2.0)
+			num_retreating = num_ships - num_destroyed
+		results_dict[player_id] = {}
+		results_dict[player_id].retreating = num_retreating
+		results_dict[player_id].destroyed = num_destroyed
+		results_dict[player_id].victorious = false
+	
+	var losers_destroyed: int = 0
+	for player_id in results_dict.keys():
+		losers_destroyed += results_dict[player_id].destroyed
+	
+	var num_ships = combatant_ships[victor_index].size()
+	var casualties: int = floori(losers_destroyed / 2.0)
+	results_dict[victor_id].retreating = ceili(casualties / 2.0)
+	results_dict[victor_id].destroyed = casualties - results_dict[victor_index].retreating
+	results_dict[victor_id].victorious = true
+	
+	return results_dict

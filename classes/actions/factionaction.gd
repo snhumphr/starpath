@@ -4,6 +4,7 @@ class_name FactionAction
 @export var action_category: String = "Basic"
 @export var action_name: String = "Dance"
 @export var short_desc: String = "Get down and boogey."
+@export var shortcut_key: String = ""
 
 @export var bound_action_selection: ActionSelection
 
@@ -27,7 +28,7 @@ func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, 
 	
 	return is_action_valid_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool: #TODO: remove default arguments from the 'base' functions to reduce future incidents
+func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction], is_in_queue: bool) -> bool:
 	
 	#var target_systems: Array[StarSystem] = selection.get_selected_systems()
 	
@@ -43,7 +44,7 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	for i in range(0, action_queue.size()):
 		var action: FactionAction = action_queue[i]
-		if self == action: #TODO: CHECK THAT THIS ACTUALLY WORKS!
+		if self == action: #TODO: CHECK THAT THIS ACTUALLY WORKS! <- it currently kind of SEEMS like it works???
 			own_index = i
 	
 	
@@ -95,7 +96,7 @@ func is_action_executable(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	return self.is_action_executable_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool:
+func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction], is_in_queue: bool) -> bool:
 	
 	if selection.selected_systems.size() != self.system_slots.size():
 		print("Not enough systems selected to fill all action's slots")
