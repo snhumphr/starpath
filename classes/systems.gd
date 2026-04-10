@@ -118,7 +118,7 @@ func get_system_description(galaxy: Galaxy) -> String:
 	
 	var description: String = self.get_system_name()
 	
-	description += ".  " + "Owned by " + Faction.FACTION_NAMES[self.faction_id][0] + " " + galaxy.get_faction_name(self.faction_id, self.player_id, 1) + "."
+	description += ".  " + "Owned by " + Faction.FACTION_NAMES[self.faction_id][0] + " " + galaxy.get_faction_name(self.player_id, 1) + "."
 	
 	description += "\n"
 	match self.construction:
@@ -135,20 +135,23 @@ func get_system_description(galaxy: Galaxy) -> String:
 	var ships_desc: PackedStringArray = PackedStringArray([])
 	var ship_verb: String = ""
 	
-	for key in ships_dict:
-		var ship_faction: Faction.FACTION_IDS = galaxy.factions[key].fac_id
+	for key in ships_dict.keys():
 		var ship_count: int = 0
+		var ship_array: Array[Ship] = []
 		for ship in ships_dict[key]:
 			if not ship.is_hidden:
 				ship_count += 1
+			ship_array.append(ship) #TODO: CHECK THAT THIS STILL WORKS WITH STEALTHED SHIPS
 		if ship_count > 0:
+			var ship_desc: String = str(ship_count) + " " + galaxy.get_faction_name(key, 2) + " ship"
 			if ship_count > 1:
-				ships_desc.append(str(ship_count) + " " + galaxy.get_faction_name(ship_faction, key, 2) + " ships")
+				ship_desc += "s"
 				ship_verb = "occupy"
 			else:
-				ships_desc.append(str(ship_count) + " " + galaxy.get_faction_name(ship_faction, key, 2) + " ship")
 				ship_verb = "occupies"
-			pass
+			
+			ship_desc += "(" + str(galaxy.calculate_fleet_strength(key, ship_array)) + " fleet strength)"
+			ships_desc.append(ship_desc)
 
 	var ships_message: String = ""
 	

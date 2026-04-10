@@ -24,10 +24,14 @@ func end_setup() -> void:
 func get_own_faction() -> Faction:
 	return factions[player_id]
 
-func get_faction_name(faction_id: Faction.FACTION_IDS, owner_id: int, index: int) -> String:
+func get_faction_name(owner_id: int, index: int) -> String:
+	
+	var faction_id: Faction.FACTION_IDS = self.factions[owner_id].fac_id
 	
 	if faction_id == Faction.FACTION_IDS.NONE or owner_id == null or owner_id == 0:
 		return Faction.FACTION_NAMES[Faction.FACTION_IDS.NONE][index]
+	elif index == 0:
+		return Faction.FACTION_NAMES[faction_id][index]
 	else:
 		return Faction.FACTION_NAMES[faction_id][index] + "(" + self.players[owner_id].player_name + ")"
 

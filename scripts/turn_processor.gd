@@ -93,14 +93,19 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 				if not battlefield_system_ids.has(neighbour.sys_id) and neighbour.player_id == player_id:
 					retreat_system_ids.append(neighbour.sys_id)
 			
-			for i in range(0, battle_results[sys_id][player_id].retreating):
+			var attempted_retreats: int = battle_results[sys_id][player_id].retreating
+			for i in range(0, attempted_retreats):
 				if i < retreat_system_ids.size():
 					new_galaxy.move_ship(sys_id, player_id, retreat_system_ids[i])
-					print("voyote vowel")
+					if not battle_results[sys_id][player_id].has("retreat_systems"):
+						battle_results[sys_id][player_id].retreat_systems = []
+					battle_results[sys_id][player_id].retreat_systems.append(retreat_system_ids[i])
 				else:
 					new_galaxy.destroy_ship(sys_id, player_id)
-	
-	#TODO: make a nice neat battle log for the turn report!
+					battle_results[sys_id][player_id].retreating -= 1
+					battle_results[sys_id][player_id].destroyed += 1
+			
+		turn_report += self.generate_battle_log(new_galaxy, sys_id, battle_results[sys_id])
 	
 	#systems change ownership here, usually destroying enemy buildings
 	for system in new_galaxy.systems:
@@ -130,6 +135,99 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		new_galaxy.current_turn += 1
 	
 	return new_galaxy
+
+func generate_battle_log(galaxy: Galaxy, sys_id: int, battle_report: Dictionary) -> Array[String]:
+	
+	var final_battle_log: Array[String] = []
+	var combatant_names: PackedStringArray = PackedStringArray([])
+	var victor_name: String = ""
+	
+	for player_id in battle_report.keys():
+		combatant_names.append(galaxy.get_faction_name(player_id, 0) + " " + galaxy.get_faction_name(player_id, 1))
+		if battle_report[player_id].victorious:
+			victor_name = galaxy.get_faction_name(player_id, 1)
+	
+	var battle_log_intro: String = "A battle occurred in the " + galaxy.get_system_from_id(sys_id).get_system_name() + " system between "
+	
+	var combatants_message: String = ""
+	var index: int = 0
+	while index < battle_report.size() -1:
+			
+		if index != 0:
+			combatants_message += ", "
+		
+		var player_id: int = battle_report.keys()[index]
+		combatants_message += galaxy.get_faction_name(player_id, 0) + " " + galaxy.get_faction_name(player_id, 1)
+		index += 1
+	
+	combatants_message += " and " + galaxy.get_faction_name(battle_report.keys()[index], 0) + " " + galaxy.get_faction_name(battle_report.keys()[index], 1)
+	battle_log_intro += combatants_message
+	
+	final_battle_log.append(battle_log_intro)
+	final_battle_log.append("    " + "The " + victor_name + " were victorious.")
+	
+	for player_id in battle_report.keys():
+		if battle_report[player_id].victorious:
+			final_battle_log.append("    " + self.generate_casualty_report(galaxy, battle_report[player_id], player_id))
+	
+	for player_id in battle_report.keys():
+		if not battle_report[player_id].victorious:
+			final_battle_log.append("    " + self.generate_casualty_report(galaxy, battle_report[player_id], player_id))
+	
+	return final_battle_log
+
+func generate_casualty_report(galaxy: Galaxy, battle_report: Dictionary, player_id: int) -> String: #note that the battle report here should be only 1 player's report
+	
+	var report: String = ""
+	
+	print(battle_report)
+	if battle_report.destroyed > 0 or battle_report.retreating > 0:
+		report = "$destroyed $faction ship$ds $were destroyed and $retreated $faction ship$rs fled"
+		if battle_report.retreat_systems.size() > 0:
+			report += " to "
+			var retreat_message: String = ""
+			var index: int = 0
+			while index < battle_report.retreat_systems.size() -1:
+			
+				if index != 0:
+					retreat_message += ", "
+		
+				retreat_message += galaxy.get_system_from_id(battle_report.retreat_systems[index]).get_system_name()
+				index += 1
+			if battle_report.retreat_systems.size() > 1:
+				retreat_message += " and "
+			retreat_message += galaxy.get_system_from_id(battle_report.retreat_systems[index]).get_system_name()
+			report += retreat_message + "."
+		else:
+			report += "."
+		
+		var format_dict: Dictionary = {
+			"$destroyed": "No",
+			"$retreated": "no",
+			"$were": "were",
+			"$ds": "s",
+			"$rs": "s",
+		}
+		
+		format_dict["$faction"] = Faction.FACTION_NAMES[galaxy.factions[player_id].fac_id][2]
+		
+		if battle_report.destroyed > 0:
+			format_dict["$destroyed"] = str(battle_report.destroyed)
+			if battle_report.destroyed == 1:
+				format_dict["$were"] = "was"
+				format_dict["$ds"] = ""
+		
+		if battle_report.retreating > 0:
+			format_dict["$retreated"] = str(battle_report.retreating)
+			if battle_report.retreating == 1:
+				format_dict["$rs"] = ""
+		
+		report = report.format(format_dict, "_")
+		
+	else:
+		report = "They suffered no losses."
+	
+	return report
 
 func process_battle(galaxy: Galaxy, system: StarSystem, battle_rng: RandomNumberGenerator) -> Dictionary:
 	
@@ -169,7 +267,7 @@ func process_battle(galaxy: Galaxy, system: StarSystem, battle_rng: RandomNumber
 	for player_id in results_dict.keys():
 		losers_destroyed += results_dict[player_id].destroyed
 	
-	var num_ships = combatant_ships[victor_index].size()
+	var winning_ships = combatant_ships[victor_index].size()
 	var casualties: int = floori(losers_destroyed / 2.0)
 	results_dict[victor_id].retreating = ceili(casualties / 2.0)
 	results_dict[victor_id].destroyed = casualties - results_dict[victor_index].retreating
