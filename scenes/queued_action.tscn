@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dymthhkvu0s06"]
 
-[ext_resource type="Script" uid="uid://b0wnnqa0eux8n" path="res://scenes/queued_action.gd" id="1_11e67"]
+[ext_resource type="Script" uid="uid://b0wnnqa0eux8n" path="res://scripts/queued_action.gd" id="1_11e67"]
 [ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="2_s3mjx"]
 
 [node name="QueuedAction" type="MarginContainer" groups=["queued_action"]]

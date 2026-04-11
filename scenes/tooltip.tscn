@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8s7tx7biomyp"]
+
+[ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="1_7dicn"]
+
+[node name="ToolTip" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1867.0
+offset_bottom = -1057.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("1_7dicn")
+
+[node name="ToolTipText" type="Label" parent="."]
+layout_mode = 2
+text = "ERROR"
+horizontal_alignment = 1

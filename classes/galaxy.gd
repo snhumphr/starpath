@@ -128,16 +128,15 @@ func get_ships_by_system() -> Dictionary:
 	
 	return ship_dict
 
-func get_ships_by_player(owner_id: int) -> Dictionary:
+func get_ships_by_player() -> Dictionary:
 	
 	var ship_dict: Dictionary = {}
 	
+	for player in self.players:
+		ship_dict[player.player_id] = []
+	
 	for ship in self.ships:
-		
-		if ship.player_id == owner_id:
-			if not ship_dict.has(ship.player_id):
-				ship_dict[ship.player_id] = []
-			ship_dict[ship.player_id].append(ship)
+		ship_dict[ship.player_id].append(ship)
 	
 	return ship_dict
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://h8xst3bp4yeg"]
+[gd_scene load_steps=12 format=3 uid="uid://h8xst3bp4yeg"]
 
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://dw5svi8ilv0hu" path="res://scripts/game.gd" id="1_e2o6t"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://8mlgoqboplrc" path="res://scripts/turn_processor.gd" id="4_gee14"]
 [ext_resource type="Script" uid="uid://b8rlw5q5swd7e" path="res://scripts/action_panel.gd" id="7_0tnpc"]
 [ext_resource type="StyleBox" uid="uid://ch2885y5mpl7l" path="res://assets/panels/monowhite.tres" id="7_u5sy4"]
+[ext_resource type="Script" uid="uid://qf127cl75vkx" path="res://scripts/factions_desc.gd" id="9_0tnpc"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_p57ef"]
 content_margin_left = 4.0
@@ -146,10 +147,12 @@ theme_override_styles/separator = SubResource("StyleBoxLine_7jktm")
 [node name="FactionsDesc" type="RichTextLabel" parent="GameBox/BottomBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+bbcode_enabled = true
 text = "You are the IMMORTAL EMPIRE.
 You face the EATERS, the ANCIENTS and the INTERLOPERS as your rivals.
 It is year 999 and your technology level is 10.
 You possess 99 systems, 77 buildings and 166 ships."
+script = ExtResource("9_0tnpc")
 
 [node name="MarginContainer" type="MarginContainer" parent="GameBox/BottomBar"]
 layout_mode = 2
