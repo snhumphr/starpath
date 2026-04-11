@@ -4,6 +4,7 @@ extends Control
 @onready var GalaxyGen: Node = self.get_node("Panel/GalaxyGen")
 @onready var TurnProcessor: Node = self.get_node("Panel/TurnProcessor")
 @onready var LeftDesc: Label = self.get_node("GameBox/BottomBar/LeftDesc")
+@onready var FactionsDesc: RichTextLabel = self.get_node("GameBox/BottomBar/FactionsDesc")
 @onready var ActionPanel: PanelContainer = self.get_node("GameBox/MainScreen/VBoxContainer/ActionPanel")
 @onready var ActionQueue: VBoxContainer = self.get_node("GameBox/MainScreen/VBoxContainer/QueuePanel/ActionQueue")
 
@@ -70,13 +71,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	ActionPanel.init(self.galaxy)
 	self.update_map()
-	
-	#TODO: do the set-up phase here, properly
-	
-	
-	
-	#self.GalaxyGen.place_neutrals(self.galaxy)
-	self.update_map()
+	self.update_factions_desc()
 
 func attempt_submit_turn() -> void:
 	if action_queue.size() > 0:
@@ -161,6 +156,7 @@ func receive_turn(received_galaxy: Galaxy) -> void:
 	self.ActionPanel.init(self.galaxy)
 	self.reset_selections()
 	self.update_map()
+	self.update_factions_desc()
 
 func update_map() -> void:
 	self.galaxy = MapFrame.init(self.galaxy, self.selections, self.highlighted, self.action_queue)
@@ -211,6 +207,43 @@ func update_system_desc(system_id: int) -> void:
 	else:
 		var system: StarSystem = self.galaxy.get_system_from_id(system_id)
 		LeftDesc.set_text(system.get_system_description(self.galaxy))
+
+func update_factions_desc() -> void:
+	var desc_template: String = "You are the $faction_name.
+You face the $enemy_names as your rivals.
+It is year $current_turn and your technology level is $tech_level.
+You possess $num_systems system$sys_s, $num_constructions constructions$const_s and $num_ships ship$ship_s."
+	
+	var desc_format: Dictionary = {
+		"$faction_name": self.galaxy.get_faction_name(galaxy.player_id, 1, false),
+		"$current_turn": str(self.galaxy.current_turn),
+		"$tech_level": str(self.galaxy.factions[self.galaxy.player_id].calculate_tech_level()), #TODO: count tech points too!
+		"$num_systems": str(self.galaxy.get_systems_owned_by_player(galaxy.player_id).size()),
+		"$sys_s": "s",
+		"$num_constructions": str(self.galaxy.get_constructions_owned_by_player(galaxy.player_id).size()),
+		"$const_s": "s",
+		"$num_ships": str(self.galaxy.get_ships_by_player(self.galaxy.player_id).size()),
+		"$ship_s": "s",
+		"$enemy_names": "",
+	}
+	
+	var enemies_template: String = ""
+	
+	desc_format["$tech_level"] += "(" + str(self.galaxy.factions[self.galaxy.player_id].calculate_points_for_advancement()) + " points until the next tech level)"
+	
+	if desc_format["$num_systems"] == "1":
+		desc_format["$sys_s"] = ""
+	
+	if desc_format["$num_constructions"] == "1":
+		desc_format["$const_s"] = ""
+	
+	if desc_format["$num_ships"] == "1":
+		desc_format["$ship_s"] = ""
+	
+	desc_template = desc_template.format(desc_format, "_")
+	
+	self.FactionsDesc.set_text("")
+	self.FactionsDesc.append_text(desc_template)
 
 func update_starpath_desc(starpath: Array[Vector2]) -> void:
 	

@@ -24,7 +24,7 @@ func end_setup() -> void:
 func get_own_faction() -> Faction:
 	return factions[player_id]
 
-func get_faction_name(owner_id: int, index: int) -> String:
+func get_faction_name(owner_id: int, index: int, append_player_name: bool = true) -> String:
 	
 	var faction_id: Faction.FACTION_IDS = self.factions[owner_id].fac_id
 	
@@ -33,7 +33,10 @@ func get_faction_name(owner_id: int, index: int) -> String:
 	elif index == 0:
 		return Faction.FACTION_NAMES[faction_id][index]
 	else:
-		return Faction.FACTION_NAMES[faction_id][index] + "(" + self.players[owner_id].player_name + ")"
+		var faction_name: String = Faction.FACTION_NAMES[faction_id][index]
+		if append_player_name:
+			faction_name += "(" + self.players[owner_id].player_name + ")"
+		return faction_name
 
 func get_system_from_id(system_id: int) -> StarSystem:
 	
@@ -122,6 +125,19 @@ func get_ships_by_system() -> Dictionary:
 	
 	for system in self.systems:
 		ship_dict[system.sys_id] = self.get_ships_in_system(system.sys_id)
+	
+	return ship_dict
+
+func get_ships_by_player(owner_id: int) -> Dictionary:
+	
+	var ship_dict: Dictionary = {}
+	
+	for ship in self.ships:
+		
+		if ship.player_id == owner_id:
+			if not ship_dict.has(ship.player_id):
+				ship_dict[ship.player_id] = []
+			ship_dict[ship.player_id].append(ship)
 	
 	return ship_dict
 

@@ -120,8 +120,6 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
 					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
 	
-	#once all combats are concluded, handle retreats
-	
 	#regenerate all faction resources + increase tech levels
 	
 	print(turn_report)

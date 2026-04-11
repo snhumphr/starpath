@@ -30,14 +30,27 @@ const TRIANGLE_MULT: int = 3
 @export var setup_priority: int = 0  # Ancients -> Empire -> Eaters -> Interlopers
 @export var setup_actions: Array[FactionAction]
 
-func calculate_tech_level() -> int:
+func calculate_tech_level(points_override: int = -1) -> int:
 	
-	var tech_level = 0
+	var tech_level: int = 0
+	var temp_tech_points: int = points_override
 	
-	while self.tech_points > TRIANGLE_MULT * (tech_level +1):
+	if temp_tech_points < 0:
+		temp_tech_points = self.tech_points
+	
+	while temp_tech_points > TRIANGLE_MULT * (tech_level +1):
 		tech_level += 1
 	
 	return tech_level 
+
+func calculate_points_for_advancement() -> int:
+	
+	var num_points: int = 1
+	
+	while self.calculate_tech_level(self.tech_points + num_points) == self.calculate_tech_level():
+		num_points += 1
+	
+	return num_points
 
 func increase_tech_points(amount: int) -> int: #Returns the number of tech levels gained from this increase
 	
