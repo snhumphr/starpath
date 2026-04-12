@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Starpath"
-run/main_scene="uid://h8xst3bp4yeg"
+run/main_scene="uid://vp4fn1ktcg4l"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="uid://dfotnwjc4r6af"
 

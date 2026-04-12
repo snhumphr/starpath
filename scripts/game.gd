@@ -82,7 +82,7 @@ func attempt_submit_turn() -> void:
 	
 	var end_turn_allowed: bool = true
 	
-	if self.galaxy.in_setup and self.action_queue.size() == 0:
+	if self.action_queue.size() == 0:
 		end_turn_allowed = false
 	else:
 		for action in self.action_queue:

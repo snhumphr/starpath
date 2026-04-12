@@ -3,6 +3,7 @@ extends Control
 var current_profile: Dictionary
 @onready var JoinRow: PanelContainer = self.get_node("MenuBar/VBoxContainer/JoinRow")
 @onready var ProfileBox: PanelContainer = self.get_node("MenuBar/ProfileBox")
+@onready var Lobby: Control = self.get_node("Lobby")
 
 const PORT: int = 7653
 const PROFILE_PATH = "user://profile.json"
@@ -59,11 +60,8 @@ func load_profile_from_disk() -> Dictionary:
 func swap_to_lobby() -> void:
 	
 	self.get_node("MenuBar").set_visible(false)
-	
-	var lobby_scene = load("res://scenes/queued_action.tscn")
-	var instance = lobby_scene.instantiate()
-	instance.init()
-	self.add_child(instance)
+	self.Lobby.set_visible(true)
+	self.Lobby.init()
 
 func _on_save_button_pressed() -> void:
 	
@@ -88,9 +86,11 @@ func _on_join_button_pressed() -> void:
 		var peer = ENetMultiplayerPeer.new()
 		peer.create_client(self.join_IP, PORT)
 		multiplayer.multiplayer_peer = peer
+		self.swap_to_lobby()
 
 func _on_host_button_pressed() -> void:
 	var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 	var max_connections: int = 6 #TODO: placeholder value; not sure if 6 players works properly right now
 	peer.create_server(PORT, max_connections)
 	multiplayer.multiplayer_peer = peer
+	self.swap_to_lobby()
