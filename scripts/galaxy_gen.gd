@@ -141,5 +141,5 @@ func place_neutrals(galaxy: Galaxy) -> void:
 		
 		if system.player_id == 0:
 			galaxy.add_ship(system.sys_id, Faction.FACTION_IDS.NONE, 0)
-			for i in range(0, ceil(system.neighbours.size()/2)*2):
+			for i in range(0, ceil(system.neighbours.size()/2)):
 				galaxy.add_ship(system.sys_id, Faction.FACTION_IDS.NONE, 0)
