@@ -134,7 +134,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 			orders_dict[player_ids[key]] = self.turn_orders[key]
 		
 		var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, orders_dict)
-		rpc("receive_turn", new_galaxy)
+		rpc("receive_turn", new_galaxy) 
 	elif galaxy.in_setup:
 		var wanted_network_id: int = -1
 		for player in self.galaxy.players:

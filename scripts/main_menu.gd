@@ -15,7 +15,7 @@ func _ready() -> void:
 	
 	#load profile from disk, if one exists
 	await get_tree().process_frame
-	var current_profile = self.load_profile_from_disk()
+	self.current_profile = self.load_profile_from_disk()
 	
 	if OS.has_feature("windows"):
 		host_IP = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
@@ -61,7 +61,9 @@ func swap_to_lobby() -> void:
 	
 	self.get_node("MenuBar").set_visible(false)
 	self.Lobby.set_visible(true)
-	self.Lobby.init()
+	print(current_profile)
+	var colour_list: PackedStringArray = self.current_profile.colour.format({"(":"", ")":""}, "_").split(", ")
+	self.Lobby.init(self.current_profile.name, Color(float(colour_list[0]), float(colour_list[1]), float(colour_list[2])))
 
 func _on_save_button_pressed() -> void:
 	
