@@ -1,0 +1,92 @@
+[gd_scene load_steps=7 format=3 uid="uid://6wdnxf8o1xy4"]
+
+[ext_resource type="Script" uid="uid://ca64rrdrixbsv" path="res://scripts/player_card.gd" id="1_kx8ed"]
+[ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="1_mvbqt"]
+[ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="2_kx8ed"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nx7or"]
+bg_color = Color(0, 0, 0, 1)
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_foft5"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvbqt"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="PlayerCard" type="MarginContainer" groups=["player_card"]]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_kx8ed")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("1_mvbqt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="NameRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="PanelContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+text = "Name: "
+
+[node name="NameEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_nx7or")
+theme_override_styles/read_only = ExtResource("2_kx8ed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nx7or")
+placeholder_text = "Stargazer"
+max_length = 12
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
+
+[node name="ColourRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/ColourRow"]
+layout_mode = 2
+text = "Colour:"
+
+[node name="ColourButton" type="ColorPickerButton" parent="PanelContainer/VBoxContainer/ColourRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pick Color"
+color = Color(0, 0, 1, 1)
+edit_alpha = false
+edit_intensity = false
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")
+
+[node name="FactionRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/FactionRow"]
+layout_mode = 2
+text = "Faction:"
+
+[node name="FactionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/FactionRow"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")

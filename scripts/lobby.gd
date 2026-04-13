@@ -11,6 +11,14 @@ func init(player_name: String, player_colour: Color) -> void:
 	
 	rpc("add_player", player_name, player_colour.r, player_colour.g, player_colour.b)
 
+func update_players_column():
+	
+	for player in players:
+		if player.network_id == multiplayer.get_unique_id():
+			pass
+		else:
+			pass
+
 @rpc("any_peer", "call_local", "reliable")
 func add_player(player_name: String, r: float, g: float, b: float) -> void:
 	var new_player: Player = Player.new()
@@ -20,7 +28,8 @@ func add_player(player_name: String, r: float, g: float, b: float) -> void:
 	new_player.player_name = player_name
 	new_player.faction_id = Faction.FACTION_IDS.NONE
 	new_player.colour = Color(r, g, b)
-	
+	self.players.append(new_player)
+	self.update_players_column()
 	#print(new_player)
 
 @rpc("any_peer", "call_local", "reliable")
@@ -36,5 +45,6 @@ func set_player(player_id: int, new_faction_id: Faction.FACTION_IDS = Faction.FA
 			player.new_name = new_name 
 		if r < 1.0 and g < 1.0 and b < 1.0:
 			player.colour = Color(r, g, b)
+		self.update_players_column()
 	else:
 		printerr(" wrong network id used to modify player")

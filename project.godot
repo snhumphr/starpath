@@ -27,6 +27,7 @@ window/size/resizable=false
 game=""
 action_button=""
 queued_action=""
+player_card=""
 
 [gui]
 
