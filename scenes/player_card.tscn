@@ -4,13 +4,13 @@
 [ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="1_mvbqt"]
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="2_kx8ed"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_foft5"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nx7or"]
 bg_color = Color(0, 0, 0, 1)
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_foft5"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvbqt"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -34,11 +34,18 @@ mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_mvbqt")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 theme_override_constants/separation = 0
+alignment = 1
 
 [node name="NameRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 4
+
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 
 [node name="PlayerName" type="Label" parent="PanelContainer/VBoxContainer/NameRow"]
 layout_mode = 2
@@ -61,6 +68,10 @@ theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 [node name="ColourRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="VSeparator3" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
+
 [node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/ColourRow"]
 layout_mode = 2
 text = "Colour:"
@@ -80,12 +91,17 @@ theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")
 [node name="FactionRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="VSeparator4" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
+
 [node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/FactionRow"]
 layout_mode = 2
 text = "Faction:"
 
 [node name="FactionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/FactionRow"]
 layout_mode = 2
+size_flags_vertical = 4
 
 [node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
 layout_mode = 2
