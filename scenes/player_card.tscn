@@ -106,3 +106,8 @@ size_flags_vertical = 4
 [node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")
+
+[connection signal="text_submitted" from="PanelContainer/VBoxContainer/NameRow/NameEdit" to="." method="_on_name_edit_text_submitted"]
+[connection signal="color_changed" from="PanelContainer/VBoxContainer/ColourRow/ColourButton" to="." method="_on_colour_button_color_changed"]
+[connection signal="popup_closed" from="PanelContainer/VBoxContainer/ColourRow/ColourButton" to="." method="_on_colour_button_popup_closed"]
+[connection signal="item_selected" from="PanelContainer/VBoxContainer/FactionRow/FactionButton" to="." method="_on_faction_button_item_selected"]

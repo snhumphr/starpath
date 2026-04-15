@@ -25,7 +25,7 @@ func full_description() -> String:
 	description += "\n" + "The EATERS are a vast collective intelligence devoted solely to their own self-propagation."
 	description += "\n" + "The more systems they spread to, the more ships they will be able to construct, even without shipyards."
 	description += "\n" + "However, they are not without weakness; destroying their central hive will substantially disrupt their logistics."
-	description += "\n" + "Finally, their technology only advances when the hive is re-built, as a new intelligence takea command."
+	description += "\n" + "Finally, their technology only advances when the hive is re-built, as a new intelligence takes command."
 	
 	return description
 

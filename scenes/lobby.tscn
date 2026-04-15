@@ -5,7 +5,7 @@
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="2_q60fs"]
 [ext_resource type="StyleBox" uid="uid://ch2885y5mpl7l" path="res://assets/panels/monowhite.tres" id="4_nqcc7"]
 
-[node name="Lobby" type="Control"]
+[node name="Lobby" type="Control" groups=["lobby"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -136,3 +136,5 @@ theme_override_styles/disabled = ExtResource("2_q60fs")
 theme_override_styles/disabled_mirrored = ExtResource("2_q60fs")
 theme_override_styles/focus = ExtResource("2_5gu6x")
 text = "START LOBBY"
+
+[connection signal="change_player" from="." to="." method="_on_change_player"]

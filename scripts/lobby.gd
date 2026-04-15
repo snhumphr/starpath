@@ -3,6 +3,8 @@ extends Control
 var players: Dictionary
 var factions: Dictionary
 
+signal change_player(new_faction_id: Faction.FACTION_IDS, new_name: String, new_colour: Color)
+
 func init(player_name: String, player_colour: Color) -> void:
 
 	#multiplayer = new_multiplayer
@@ -25,6 +27,8 @@ func init_factions() -> Dictionary:
 	return new_factions
 
 func update_players_column():
+	
+	get_tree().call_group("player_card", "queue_free")
 	
 	for key in players.keys():
 		var player: Player = players[key]
@@ -71,7 +75,12 @@ func set_player(new_faction_id: Faction.FACTION_IDS = Faction.FACTION_IDS.NONE, 
 	if new_faction_id != Faction.FACTION_IDS.NONE:
 		player.faction_id = new_faction_id
 	if new_name != "": #TODO: check that the name isn't already in use before changing this
-		player.new_name = new_name 
-	if r < 1.0 and g < 1.0 and b < 1.0:
+		player.player_name = new_name 
+	if r <= 1.0 and g <= 1.0 and b <= 1.0:
 		player.colour = Color(r, g, b)
 	self.update_players_column()
+	if player.network_id == multiplayer.get_unique_id():
+		update_faction_display(player.faction_id)
+
+func _on_change_player(new_faction_id: Faction.FACTION_IDS, new_name: String, r: float, g: float, b: float) -> void:
+	rpc.call("set_player", new_faction_id, new_name, r, g ,b)
