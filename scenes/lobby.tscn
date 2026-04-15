@@ -54,6 +54,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="FactionText" type="RichTextLabel" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
 [node name="PickButton" type="Button" parent="MarginContainer/HBoxContainer/Factions/Control"]
 visible = false
 custom_minimum_size = Vector2(300, 0)

@@ -1,7 +1,7 @@
 extends Control
 
 var players: Dictionary
-var factions: Array[Faction]
+var factions: Dictionary
 
 func init(player_name: String, player_colour: Color) -> void:
 
@@ -14,13 +14,13 @@ func init(player_name: String, player_colour: Color) -> void:
 	
 	rpc("add_player", player_name, player_colour.r, player_colour.g, player_colour.b)
 
-func init_factions() -> Array[Faction]:
+func init_factions() -> Dictionary:
 	
-	var new_factions: Array[Faction] = []
+	var new_factions: Dictionary = {}
 	
 	var eater_faction: Faction = Eaters.new()
 	eater_faction.init(0) #TODO: check that this doesn't break anything!
-	new_factions.append(eater_faction)
+	new_factions[eater_faction.fac_id] = eater_faction
 	
 	return new_factions
 
@@ -39,19 +39,28 @@ func add_player_card(player: Player, editing_allowed: bool = false) -> void:
 	instance.init(player, self.factions, editing_allowed)
 	self.get_node("MarginContainer/HBoxContainer/Lobby/Control/PlayersCol").add_child(instance)
 
+func update_faction_display(faction_id: Faction.FACTION_IDS) -> void:
+	
+	var display_faction: Faction = self.factions[faction_id]
+	var display_node: RichTextLabel = self.get_node("MarginContainer/HBoxContainer/Factions/Control/FactionsCol/MarginContainer/FactionText")
+	display_node.set_text("")
+	display_node.append_text(display_faction.full_description())
+
 @rpc("any_peer", "call_local", "reliable")
 func add_player(player_name: String, r: float, g: float, b: float) -> void:
 	var new_player: Player = Player.new()
 	#var new_player: Dictionary = {}
 	new_player.network_id = multiplayer.get_remote_sender_id()
 	new_player.player_name = player_name
-	new_player.faction_id = self.factions[0].fac_id
+	new_player.faction_id = self.factions[self.factions.keys()[0]].fac_id
 	new_player.colour = Color(r, g, b)
 	if not players.has(multiplayer.get_remote_sender_id()):
 		self.players[multiplayer.get_remote_sender_id()] = new_player
 	else:
 		printerr("Tried to add duplicate player")
 	self.update_players_column()
+	if new_player.network_id == multiplayer.get_unique_id():
+		update_faction_display(new_player.faction_id)
 	#print(new_player)
 
 @rpc("any_peer", "call_local", "reliable")
