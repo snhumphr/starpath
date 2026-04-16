@@ -20,9 +20,10 @@ func _ready() -> void:
 	self.current_profile = self.load_profile_from_disk()
 	
 	if OS.has_feature("windows"):
-		host_IP = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
+		self.host_IP = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
 	else: #This needs testing on non-windows devices
-		host_IP = IP.get_local_addresses()[0] #TODO: likely needs serious filtering
+		self.host_IP = IP.get_local_addresses()[0] #TODO: likely needs serious filtering
+	self.host_IP = "localhost" #TESTING ONLY
 		
 	print("HOST IP: " + self.host_IP)
 		
@@ -89,8 +90,10 @@ func _on_join_button_pressed() -> void:
 		file.store_string(self.join_IP)
 		
 		var peer = ENetMultiplayerPeer.new()
-		peer.create_client(self.join_IP, PORT)
+		var error: int = peer.create_client(self.join_IP, PORT)
 		multiplayer.multiplayer_peer = peer
+		for i in range(0, 60):
+			await get_tree().process_frame
 		self.swap_to_lobby()
 
 func _on_host_button_pressed() -> void:
@@ -101,7 +104,6 @@ func _on_host_button_pressed() -> void:
 	self.swap_to_lobby()
 
 func _on_start_game(players: Dictionary, factions: Dictionary) -> void:
-	print("awoooo")
 	var game_node: Control = self.get_node("Game")
 	self.get_node("MenuBar").set_visible(false)
 	self.get_node("Lobby").set_visible(false)

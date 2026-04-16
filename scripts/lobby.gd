@@ -19,6 +19,8 @@ func init(player_name: String, player_colour: Color) -> void:
 	if multiplayer.get_unique_id() != 1:
 		self.get_node("MarginContainer/HBoxContainer/Lobby/Control/StartButton").set_visible(false)
 	
+	if not multiplayer.is_server():
+		rpc_id(1, "new_player_joined")
 	rpc("add_player", player_name, player_colour.r, player_colour.g, player_colour.b)
 
 func init_factions() -> Dictionary:
@@ -86,6 +88,31 @@ func set_player(new_faction_id: Faction.FACTION_IDS = Faction.FACTION_IDS.NONE, 
 	self.update_players_column()
 	if player.network_id == multiplayer.get_unique_id():
 		update_faction_display(player.faction_id)
+
+@rpc("authority", "reliable")
+func upload_player(player_dict: Dictionary) -> void:
+	
+	var new_player: Player = Player.new()
+	new_player.network_id = player_dict.network_id
+	new_player.faction_id = player_dict.faction_id
+	new_player.player_name = player_dict.player_name
+	new_player.colour = Color(player_dict.r, player_dict.g, player_dict.b)
+	
+	self.players[player_dict.network_id] = new_player
+	self.update_players_column()
+
+@rpc("any_peer", "reliable")
+func new_player_joined() -> void:
+	for key in self.players.keys():
+		var player: Player = self.players[key]
+		var player_dict: Dictionary = {}
+		player_dict.network_id = player.network_id
+		player_dict.faction_id = player.faction_id
+		player_dict.player_name = player.player_name
+		player_dict.r = player.colour.r
+		player_dict.g = player.colour.g
+		player_dict.b = player.colour.b
+		rpc_id(multiplayer.get_remote_sender_id(), "upload_player", player_dict)
 
 @rpc("authority", "call_local", "reliable")
 func start_game() -> void:
