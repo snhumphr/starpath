@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dlxi3fppdrr23"]
+[gd_scene format=3 uid="uid://dlxi3fppdrr23"]
 
 [ext_resource type="Script" uid="uid://c4rggnru3htl4" path="res://scripts/lobby.gd" id="1_o1atq"]
 [ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="2_5gu6x"]
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="2_q60fs"]
 [ext_resource type="StyleBox" uid="uid://ch2885y5mpl7l" path="res://assets/panels/monowhite.tres" id="4_nqcc7"]
 
-[node name="Lobby" type="Control" groups=["lobby"]]
+[node name="Lobby" type="Control" unique_id=711030191 groups=["lobby"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_o1atq")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=2088712286]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("2_q60fs")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1639287380]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,18 +35,18 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1943307715]
 layout_mode = 2
 
-[node name="Factions" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="Factions" type="PanelContainer" parent="MarginContainer/HBoxContainer" unique_id=244523980]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("2_5gu6x")
 
-[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/Factions"]
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/Factions" unique_id=530946742]
 layout_mode = 2
 
-[node name="FactionsCol" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Factions/Control"]
+[node name="FactionsCol" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Factions/Control" unique_id=1828927967]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +54,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol" unique_id=1569001056]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 10
@@ -62,12 +62,12 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="FactionText" type="RichTextLabel" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol/MarginContainer"]
+[node name="FactionText" type="RichTextLabel" parent="MarginContainer/HBoxContainer/Factions/Control/FactionsCol/MarginContainer" unique_id=397559848]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 
-[node name="PickButton" type="Button" parent="MarginContainer/HBoxContainer/Factions/Control"]
+[node name="PickButton" type="Button" parent="MarginContainer/HBoxContainer/Factions/Control" unique_id=1647018356]
 visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 1
@@ -94,16 +94,16 @@ theme_override_styles/disabled_mirrored = ExtResource("2_q60fs")
 theme_override_styles/focus = ExtResource("2_5gu6x")
 text = "CONFIRM FACTION CHOICE"
 
-[node name="Lobby" type="PanelContainer" parent="MarginContainer/HBoxContainer"]
+[node name="Lobby" type="PanelContainer" parent="MarginContainer/HBoxContainer" unique_id=1325076134]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 theme_override_styles/panel = ExtResource("2_5gu6x")
 
-[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/Lobby"]
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/Lobby" unique_id=838126293]
 layout_mode = 2
 
-[node name="PlayersCol" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Lobby/Control"]
+[node name="PlayersCol" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Lobby/Control" unique_id=1820647994]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,7 +111,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="StartButton" type="Button" parent="MarginContainer/HBoxContainer/Lobby/Control"]
+[node name="StartButton" type="Button" parent="MarginContainer/HBoxContainer/Lobby/Control" unique_id=211594271]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 1
 anchors_preset = -1
