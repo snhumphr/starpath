@@ -82,6 +82,7 @@ func _on_join_button_pressed() -> void:
 	
 	self.join_IP = self.JoinRow.get_node("MarginContainer/HBoxContainer/LineEdit").get_text()
 	self.join_IP = self.join_IP.strip_edges()
+	print(self.join_IP)
 	
 	if self.join_IP != "":
 		var file = FileAccess.open(JOIN_IP_PATH, FileAccess.WRITE)
