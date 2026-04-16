@@ -34,11 +34,22 @@ signal change_current_action(action: FactionAction)
 signal add_action_to_queue(action: FactionAction)
 signal remove_action_from_queue(action_index: int)
 
-func _ready() -> void:
+func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
 	
 	self.selections = ActionSelection.new()
 	self.reset_highlight()
 	self.galaxy = GalaxyGen.init(53+53) #testing seed of 53 + 53
+	
+	var temp_network_id_list: Array[int] = []
+	
+	for key in players_dict:
+		temp_network_id_list.append(key)
+	
+	var index: int = 1
+	for net_id in temp_network_id_list:
+		players_dict[net_id].player_id = index
+		self.player_ids[net_id] = index
+		index += 1
 	
 	var neutral_player: Player = Player.new()
 	neutral_player.colour = Color.WHITE
@@ -48,23 +59,28 @@ func _ready() -> void:
 	neutral_player.network_id = -1
 	neutral_player.player_id = 0
 	
-	var test_player: Player = Player.new()
-	test_player.player_name = "Arc"
-	test_player.colour = Color.BLUE
-	test_player.faction_id = Faction.FACTION_IDS.DEVOURER
-	test_player.network_id = 1
-	test_player.player_id = 1
+	#var test_player: Player = Player.new()
+	#test_player.player_name = "Arc"
+	#test_player.colour = Color.BLUE
+	#test_player.faction_id = Faction.FACTION_IDS.DEVOURER
+	#test_player.network_id = 1
+	#test_player.player_id = 1
 	
-	self.player_ids = {1 : 1}
+	self.galaxy.players = [neutral_player]
+	self.galaxy.player_id = player_ids[multiplayer.get_unique_id()]
 	
-	self.galaxy.players = [neutral_player, test_player]
-	self.galaxy.player_id = 1
 	self.galaxy.factions[0] = Faction.new()
 	self.galaxy.factions[0].player_id = 0
 	self.galaxy.factions[0].fac_id = Faction.FACTION_IDS.NONE
-	self.galaxy.factions[self.galaxy.player_id] = Eaters.new()
-	self.galaxy.factions[self.galaxy.player_id].init(self.galaxy.player_id)
-	self.galaxy.factions[self.galaxy.player_id].player_id = self.galaxy.player_id
+	
+	for net_id in self.player_ids:
+		var player: Player = players_dict[net_id]
+		self.galaxy.players.append(player)
+		self.galaxy.factions[player.player_id] = factions_dict[player.faction_id].duplicate() #TODO: this might need a DEEP duplicate
+	
+	#self.galaxy.factions[self.galaxy.player_id] = Eaters.new()
+	#self.galaxy.factions[self.galaxy.player_id].init(self.galaxy.player_id)
+	#self.galaxy.factions[self.galaxy.player_id].player_id = self.galaxy.player_id
 	
 	self.galaxy.setup_order = self.GalaxyGen.generate_setup_order(self.galaxy)
 	

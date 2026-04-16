@@ -138,3 +138,4 @@ theme_override_styles/focus = ExtResource("2_5gu6x")
 text = "START LOBBY"
 
 [connection signal="change_player" from="." to="." method="_on_change_player"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Lobby/Control/StartButton" to="." method="_on_start_button_pressed"]

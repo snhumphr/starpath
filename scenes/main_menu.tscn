@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://vp4fn1ktcg4l"]
+[gd_scene load_steps=10 format=3 uid="uid://vp4fn1ktcg4l"]
 
 [ext_resource type="Script" uid="uid://cwar85c2nk2fw" path="res://scripts/main_menu.gd" id="1_8ln24"]
 [ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="1_l6cm7"]
@@ -6,6 +6,7 @@
 [ext_resource type="StyleBox" uid="uid://ch2885y5mpl7l" path="res://assets/panels/monowhite.tres" id="3_wu84c"]
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="4_8ln24"]
 [ext_resource type="PackedScene" uid="uid://dlxi3fppdrr23" path="res://scenes/lobby.tscn" id="6_rtw2f"]
+[ext_resource type="PackedScene" uid="uid://h8xst3bp4yeg" path="res://scenes/game.tscn" id="7_oa1go"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wu84c"]
 bg_color = Color(0, 0, 0, 1)
@@ -15,7 +16,7 @@ border_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ln24"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" groups=["menu"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -267,6 +268,11 @@ text = "SAVE PROFILE"
 visible = false
 layout_mode = 1
 
+[node name="Game" parent="." instance=ExtResource("7_oa1go")]
+visible = false
+layout_mode = 1
+
+[connection signal="start_game" from="." to="." method="_on_start_game"]
 [connection signal="pressed" from="MenuBar/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="MenuBar/VBoxContainer/JoinRow/MarginContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="MenuBar/ProfileBox/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

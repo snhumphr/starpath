@@ -29,6 +29,7 @@ action_button=""
 queued_action=""
 player_card=""
 lobby=""
+menu=""
 
 [gui]
 

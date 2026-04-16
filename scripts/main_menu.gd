@@ -11,6 +11,8 @@ const JOIN_IP_PATH = "user://joinip.txt"
 var host_IP: String
 var join_IP: String
 
+signal start_game(players: Dictionary)
+
 func _ready() -> void:
 	
 	#load profile from disk, if one exists
@@ -96,3 +98,11 @@ func _on_host_button_pressed() -> void:
 	peer.create_server(PORT, max_connections)
 	multiplayer.multiplayer_peer = peer
 	self.swap_to_lobby()
+
+func _on_start_game(players: Dictionary, factions: Dictionary) -> void:
+	print("awoooo")
+	var game_node: Control = self.get_node("Game")
+	self.get_node("MenuBar").set_visible(false)
+	self.get_node("Lobby").set_visible(false)
+	game_node.set_visible(true)
+	game_node.start_game(players, factions)

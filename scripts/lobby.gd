@@ -14,6 +14,11 @@ func init(player_name: String, player_colour: Color) -> void:
 	
 	self.factions = self.init_factions()
 	
+	print(multiplayer.get_unique_id() )
+	
+	if multiplayer.get_unique_id() != 1:
+		self.get_node("MarginContainer/HBoxContainer/Lobby/Control/StartButton").set_visible(false)
+	
 	rpc("add_player", player_name, player_colour.r, player_colour.g, player_colour.b)
 
 func init_factions() -> Dictionary:
@@ -82,5 +87,13 @@ func set_player(new_faction_id: Faction.FACTION_IDS = Faction.FACTION_IDS.NONE, 
 	if player.network_id == multiplayer.get_unique_id():
 		update_faction_display(player.faction_id)
 
+@rpc("authority", "call_local", "reliable")
+func start_game() -> void:
+	get_tree().call_group("menu", "emit_signal", "start_game", self.players, self.factions)
+
 func _on_change_player(new_faction_id: Faction.FACTION_IDS, new_name: String, r: float, g: float, b: float) -> void:
 	rpc.call("set_player", new_faction_id, new_name, r, g ,b)
+
+func _on_start_button_pressed() -> void:
+	if multiplayer.get_unique_id() == 1: #check probably not needed, but just in case
+		rpc.call("start_game")
