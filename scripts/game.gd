@@ -319,78 +319,80 @@ func is_pos_along_starpath(pos: Vector2) -> Array[Vector2]:
 
 func _input(event: InputEvent) -> void:
 	
-	if event is InputEventKey and not event.pressed:
-		if event.is_action("clear"):
-			self.reset_selections()
-			self.update_map()
-		elif event.is_action("queue"):
-			if self.current_action != null:
-				self.emit_signal("add_action_to_queue", current_action)
-		elif event.is_action("submit"):
-			#self.attempt_submit_turn()
-			pass
+	if self.is_visible_in_tree():
+		if event is InputEventKey and not event.pressed:
+			if event.is_action("clear"):
+				self.reset_selections()
+				self.update_map()
+			elif event.is_action("queue"):
+				if self.current_action != null:
+					self.emit_signal("add_action_to_queue", current_action)
+			elif event.is_action("submit"):
+				#self.attempt_submit_turn()
+				pass
 
 func _gui_input(event: InputEvent) -> void:
 	
-	if event is InputEventMouseMotion:
-		var pos: Vector2 = event.position
-		var system: StarSystem = self.is_pos_in_system(pos)
-		var starpath: Array[Vector2] = self.is_pos_along_starpath(pos)
-		
-		if system != null:
-			if self.highlighted["highlight_type"] != "system" or self.highlighted["highlight_id"] != system.sys_id:
-				self.highlighted["highlight_type"] = "system"
-				self.highlighted["highlight_id"] = system.sys_id
-				self.update_system_desc(system.sys_id)
-				self.update_map()
-				#print("mouse position in system " + str(system.sys_id))
-		elif starpath.size() > 0:
-			if self.highlighted["highlight_type"] != "starpath" or  self.highlighted["highlight_id"] != starpath:
-				self.highlighted["highlight_type"] = "starpath"
-				self.highlighted["highlight_id"] = starpath
-				self.update_starpath_desc(starpath)
-				self.update_map()
-				#print("mouse position along starpath")
-		else:
-			if self.highlighted["highlight_type"] != "": 
-				reset_highlight()
-				self.update_system_desc(-1)
-				self.update_map()
-	elif event is InputEventMouseButton and event.pressed:
-		
-		if self.highlighted["highlight_type"] == "system":
-			var system: StarSystem = galaxy.get_system_from_id(self.highlighted["highlight_id"])
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				var is_selected: bool = self.add_system_to_selection(system)
-				if not is_selected:
-					selections.add_ship(galaxy, system, action_queue)
-			elif event.button_index == MOUSE_BUTTON_RIGHT:
-				selections.remove_system(galaxy, system)
-			elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				if self.selections.get_system_index(galaxy, system) != -1:
-					selections.add_ship(galaxy, system, action_queue)
-			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				if self.selections.get_system_index(galaxy, system) != -1:
-					selections.remove_ship(galaxy, system, action_queue)
-			self.update_action_buttons()
-		elif self.highlighted["highlight_type"] == "starpath":
+	if self.is_visible_in_tree():
+		if event is InputEventMouseMotion:
+			var pos: Vector2 = event.position
+			var system: StarSystem = self.is_pos_in_system(pos)
+			var starpath: Array[Vector2] = self.is_pos_along_starpath(pos)
 			
-			var starpath_systems: Array[StarSystem] = self.galaxy.get_systems_from_starpath(self.highlighted["highlight_id"])
+			if system != null:
+				if self.highlighted["highlight_type"] != "system" or self.highlighted["highlight_id"] != system.sys_id:
+					self.highlighted["highlight_type"] = "system"
+					self.highlighted["highlight_id"] = system.sys_id
+					self.update_system_desc(system.sys_id)
+					self.update_map()
+					#print("mouse position in system " + str(system.sys_id))
+			elif starpath.size() > 0:
+				if self.highlighted["highlight_type"] != "starpath" or  self.highlighted["highlight_id"] != starpath:
+					self.highlighted["highlight_type"] = "starpath"
+					self.highlighted["highlight_id"] = starpath
+					self.update_starpath_desc(starpath)
+					self.update_map()
+					#print("mouse position along starpath")
+			else:
+				if self.highlighted["highlight_type"] != "": 
+					reset_highlight()
+					self.update_system_desc(-1)
+					self.update_map()
+		elif event is InputEventMouseButton and event.pressed:
 			
-			if starpath_systems.size() == 2 and self.selections.selected_systems.size() > 0:
-				var latest_system: StarSystem = self.selections.selected_systems.back()
-				if starpath_systems[0].is_system_identical(latest_system):
-					var is_selected: bool = self.add_system_to_selection(starpath_systems[1])
-					#if not is_selected:
-					#	selections.add_ship(galaxy, starpath_systems[1], action_queue)
-				elif starpath_systems[1].is_system_identical(latest_system):
-					var is_selected: bool = self.add_system_to_selection(starpath_systems[0])
-					#if not is_selected:
-					#	selections.add_ship(galaxy, starpath_systems[0], action_queue)
+			if self.highlighted["highlight_type"] == "system":
+				var system: StarSystem = galaxy.get_system_from_id(self.highlighted["highlight_id"])
+				if event.button_index == MOUSE_BUTTON_LEFT:
+					var is_selected: bool = self.add_system_to_selection(system)
+					if not is_selected:
+						selections.add_ship(galaxy, system, action_queue)
+				elif event.button_index == MOUSE_BUTTON_RIGHT:
+					selections.remove_system(galaxy, system)
+				elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+					if self.selections.get_system_index(galaxy, system) != -1:
+						selections.add_ship(galaxy, system, action_queue)
+				elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+					if self.selections.get_system_index(galaxy, system) != -1:
+						selections.remove_ship(galaxy, system, action_queue)
+				self.update_action_buttons()
+			elif self.highlighted["highlight_type"] == "starpath":
+				
+				var starpath_systems: Array[StarSystem] = self.galaxy.get_systems_from_starpath(self.highlighted["highlight_id"])
+				
+				if starpath_systems.size() == 2 and self.selections.selected_systems.size() > 0:
+					var latest_system: StarSystem = self.selections.selected_systems.back()
+					if starpath_systems[0].is_system_identical(latest_system):
+						var is_selected: bool = self.add_system_to_selection(starpath_systems[1])
+						#if not is_selected:
+						#	selections.add_ship(galaxy, starpath_systems[1], action_queue)
+					elif starpath_systems[1].is_system_identical(latest_system):
+						var is_selected: bool = self.add_system_to_selection(starpath_systems[0])
+						#if not is_selected:
+						#	selections.add_ship(galaxy, starpath_systems[0], action_queue)
+			
+			self.update_map()
 		
-		self.update_map()
-	
-		#print(self.highlighted["highlight_id"])
+			#print(self.highlighted["highlight_id"])
 
 func _on_change_current_action(action: FactionAction) -> void:
 	
