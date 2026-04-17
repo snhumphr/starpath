@@ -8,6 +8,7 @@ enum ChangeTypes {
 	CHANGE_CONSTRUCTION, # args; sys_id, new construction id
 	CHANGE_OWNERSHIP, # args; sys_id, new player_id
 	ADVANCE_SETUP, # args are unimportant
+	RESEARCH, # uses player_id to find the faction + uses num_ships as tech points
 }
 
 @export var size: Vector2
@@ -206,6 +207,9 @@ func apply_change(change_list: PackedInt32Array) -> void:
 			var system: StarSystem = self.get_system_from_id(sys_id)
 			system.player_id = changed_player_id
 			system.faction_id = faction_id
+		self.ChangeTypes.RESEARCH:
+			var faction: Faction = self.factions[player_id]
+			faction.increase_tech_points(num_ships)
 		self.ChangeTypes.ADVANCE_SETUP:
 			self.setup_index += 1
 			if self.setup_index >= self.setup_order.size():

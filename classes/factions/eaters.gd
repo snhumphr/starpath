@@ -105,7 +105,7 @@ func load_actions() -> Array[FactionAction]:
 	
 	return eater_actions
 
-func rebuild_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func rebuild_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var execution_log: Array[String]  = []
 	
@@ -127,7 +127,7 @@ func rebuild_execution(executing_action: FactionAction, galaxy: Galaxy, selectio
 	
 	return execution_log
 
-func proliferate_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func proliferate_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var execution_log: Array[String]  = []
 	
