@@ -149,26 +149,24 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 		for key in self.turn_orders.keys():
 			orders_dict[player_ids[key]] = self.turn_orders[key]
 		
-		var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, orders_dict)
-		rpc("receive_turn", new_galaxy) 
+		var turn_array: Array[Array] = self.TurnProcessor.process_turn(self.galaxy, orders_dict)
+		rpc("receive_turn", turn_array[0]) 
 	elif galaxy.in_setup:
 		var wanted_network_id: int = -1
 		for player in self.galaxy.players:
 			if player.player_id == self.galaxy.setup_order[self.galaxy.setup_index]:
 				wanted_network_id = player.network_id
 		if self.turn_orders.keys().has(wanted_network_id):
-			var new_galaxy: Galaxy = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
-			if not new_galaxy.in_setup:
-				self.GalaxyGen.place_neutrals(new_galaxy)
-				pass
-			rpc("receive_turn", new_galaxy)
+			var turn_array: Array[Array] = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
+			for change in turn_array[0]:
+				if change[0] == Galaxy.ChangeTypes.ADVANCE_SETUP and self.galaxy.setup_index == self.galaxy.setup_order.size() -1:
+					turn_array[0] += self.GalaxyGen.place_neutrals(self.galaxy)
+			rpc("receive_turn", turn_array[0])
 
 @rpc("authority", "call_local", "reliable")
-func receive_turn(received_galaxy: Galaxy) -> void:
+func receive_turn(received_changes: Array[PackedInt32Array]) -> void:
 	print("New turn received!")
-	var new_galaxy: Galaxy = received_galaxy.duplicate()
-	new_galaxy.player_id = self.galaxy.player_id
-	self.galaxy = new_galaxy
+	self.galaxy.apply_changes(received_changes)
 	self.ActionPanel.init(self.galaxy)
 	self.reset_selections()
 	self.update_map()

@@ -202,7 +202,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 	if not new_galaxy.in_setup:
 		new_galaxy.current_turn += 1
 	
-	var results: Array[Array] = [turn_report, changes]
+	var results: Array[Array] = [changes, turn_report]
 	
 	return results
 
