@@ -7,6 +7,7 @@ enum ChangeTypes {
 	REMOVE_SHIP, # args; player_id, sys_id, number of ships
 	CHANGE_CONSTRUCTION, # args; sys_id, new construction id
 	CHANGE_OWNERSHIP, # args; sys_id, new player_id
+	ADVANCE_SETUP, # args are unimportant
 }
 
 @export var size: Vector2
@@ -205,6 +206,13 @@ func apply_change(change_list: PackedInt32Array) -> void:
 			var system: StarSystem = self.get_system_from_id(sys_id)
 			system.player_id = changed_player_id
 			system.faction_id = faction_id
+		self.ChangeTypes.ADVANCE_SETUP:
+			self.setup_index += 1
+			if self.setup_index >= self.setup_order.size():
+				self.in_setup = false
+		_:
+			printerr("Invalid change type " + str(change_type))
+			assert(false)
 
 func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
 	

@@ -40,6 +40,16 @@ var ownership_change: PackedInt32Array = PackedInt32Array([
 	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
 ])
 
+var inc_setup_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.ADVANCE_SETUP, #change type
+	0, #player id
+	Faction.FACTION_IDS.NONE, #faction id
+	0, #system id
+	0, #dest id
+	0, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
 const CHANGE_TYPE_INDEX: int = 0
 const PLAYER_ID_INDEX: int = 1
 const FACTION_ID_INDEX: int = 2
@@ -187,9 +197,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 	print(turn_report)
 	
 	if new_galaxy.in_setup:
-		new_galaxy.setup_index +=1
-		if new_galaxy.setup_index >= new_galaxy.setup_order.size():
-			new_galaxy.in_setup = false
+		changes.append(self.inc_setup_change)
 	
 	if not new_galaxy.in_setup:
 		new_galaxy.current_turn += 1
