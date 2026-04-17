@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://h8xst3bp4yeg"]
+[gd_scene format=3 uid="uid://h8xst3bp4yeg"]
 
 [ext_resource type="StyleBox" uid="uid://dpns7fitr3coh" path="res://assets/panels/monoblack.tres" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://dw5svi8ilv0hu" path="res://scripts/game.gd" id="1_e2o6t"]
@@ -27,7 +27,7 @@ grow_begin = 6.0
 thickness = 2
 vertical = true
 
-[node name="Game" type="Control" groups=["game"]]
+[node name="Game" type="Control" unique_id=520215667 groups=["game"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_e2o6t")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1178401237]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,13 +46,13 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("1_80nbo")
 
-[node name="GalaxyGen" type="Node" parent="Panel"]
+[node name="GalaxyGen" type="Node" parent="Panel" unique_id=1928879921]
 script = ExtResource("3_7jktm")
 
-[node name="TurnProcessor" type="Node" parent="Panel"]
+[node name="TurnProcessor" type="Node" parent="Panel" unique_id=152596957]
 script = ExtResource("4_gee14")
 
-[node name="GameBox" type="VBoxContainer" parent="."]
+[node name="GameBox" type="VBoxContainer" parent="." unique_id=2075310769]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,27 +61,27 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MainScreen" type="HBoxContainer" parent="GameBox"]
+[node name="MainScreen" type="HBoxContainer" parent="GameBox" unique_id=751492820]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="MapBox" type="PanelContainer" parent="GameBox/MainScreen"]
+[node name="MapBox" type="PanelContainer" parent="GameBox/MainScreen" unique_id=78924045]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 100.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("3_fc0e3")
 
-[node name="MapFrame" type="Control" parent="GameBox/MainScreen/MapBox"]
+[node name="MapFrame" type="Control" parent="GameBox/MainScreen/MapBox" unique_id=1275520039]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("3_feb5d")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GameBox/MainScreen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GameBox/MainScreen" unique_id=750252378]
 layout_mode = 2
 
-[node name="ActionPanel" type="PanelContainer" parent="GameBox/MainScreen/VBoxContainer"]
+[node name="ActionPanel" type="PanelContainer" parent="GameBox/MainScreen/VBoxContainer" unique_id=1652564528]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -89,11 +89,11 @@ mouse_filter = 2
 theme_override_styles/panel = ExtResource("3_fc0e3")
 script = ExtResource("7_0tnpc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GameBox/MainScreen/VBoxContainer/ActionPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GameBox/MainScreen/VBoxContainer/ActionPanel" unique_id=1429999727]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="QueueButton" type="Button" parent="GameBox/MainScreen/VBoxContainer"]
+[node name="QueueButton" type="Button" parent="GameBox/MainScreen/VBoxContainer" unique_id=1751398827]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -110,41 +110,41 @@ theme_override_styles/disabled_mirrored = ExtResource("1_80nbo")
 theme_override_styles/focus = ExtResource("3_fc0e3")
 text = "QUEUE ACTION"
 
-[node name="QueuePanel" type="PanelContainer" parent="GameBox/MainScreen/VBoxContainer"]
+[node name="QueuePanel" type="PanelContainer" parent="GameBox/MainScreen/VBoxContainer" unique_id=467433654]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("3_fc0e3")
 
-[node name="ActionQueue" type="VBoxContainer" parent="GameBox/MainScreen/VBoxContainer/QueuePanel"]
+[node name="ActionQueue" type="VBoxContainer" parent="GameBox/MainScreen/VBoxContainer/QueuePanel" unique_id=842946518]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="Label" type="Label" parent="GameBox/MainScreen/VBoxContainer/QueuePanel/ActionQueue"]
+[node name="Label" type="Label" parent="GameBox/MainScreen/VBoxContainer/QueuePanel/ActionQueue" unique_id=1843188958]
 layout_mode = 2
 text = "Actions Queued"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="GameBox/MainScreen"]
+[node name="HSeparator" type="HSeparator" parent="GameBox/MainScreen" unique_id=1605790094]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_p57ef")
 
-[node name="BottomBar" type="HBoxContainer" parent="GameBox"]
+[node name="BottomBar" type="HBoxContainer" parent="GameBox" unique_id=970529636]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 8
 mouse_filter = 2
 
-[node name="LeftDesc" type="Label" parent="GameBox/BottomBar"]
+[node name="LeftDesc" type="Label" parent="GameBox/BottomBar" unique_id=1178131268]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 1
 
-[node name="VSeparator" type="VSeparator" parent="GameBox/BottomBar"]
+[node name="VSeparator" type="VSeparator" parent="GameBox/BottomBar" unique_id=1324544851]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_7jktm")
 
-[node name="FactionsDesc" type="RichTextLabel" parent="GameBox/BottomBar"]
+[node name="FactionsDesc" type="RichTextLabel" parent="GameBox/BottomBar" unique_id=997293732]
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
@@ -154,11 +154,11 @@ It is year 999 and your technology level is 10.
 You possess 99 systems, 77 buildings and 166 ships."
 script = ExtResource("9_0tnpc")
 
-[node name="MarginContainer" type="MarginContainer" parent="GameBox/BottomBar"]
+[node name="MarginContainer" type="MarginContainer" parent="GameBox/BottomBar" unique_id=887141298]
 layout_mode = 2
 theme_override_constants/margin_right = 7
 
-[node name="Button" type="Button" parent="GameBox/BottomBar/MarginContainer"]
+[node name="Button" type="Button" parent="GameBox/BottomBar/MarginContainer" unique_id=1572812566]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 focus_mode = 0

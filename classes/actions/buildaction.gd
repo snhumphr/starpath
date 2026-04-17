@@ -19,7 +19,7 @@ func starting_system_slot() -> SystemSlot:
 	
 	return slot
 
-func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var execution_message: Array[String] = []
 	
@@ -35,7 +35,7 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -
 		elif self.ships_built < 0:
 			pass #TODO: implement consuming ships to build things when implementing Ancients
 	
-	execution_message += self.execute_action_base(galaxy, selection, actor_id)
+	execution_message += self.execute_action_base(galaxy, selection, actor_id, changes)
 	
 	return execution_message
 

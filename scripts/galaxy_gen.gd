@@ -6,6 +6,16 @@ const EMPTY_SYSTEM_PERCENTAGE: float = 0.2
 var max_starpath_length: float = 0.5
 var starpaths: Dictionary = {}
 
+var add_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.ADD_SHIP, #change type
+	0, #player id
+	Faction.FACTION_IDS.NONE, #faction id
+	0, #system id
+	0, #dest id
+	1, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
 func init(gal_seed: int) -> Galaxy:
 
 	var new_galaxy: Galaxy = self.generate_random_galaxy(gal_seed)
@@ -135,11 +145,17 @@ func try_neighbour_connection(system_a: StarSystem, system_b: StarSystem) -> Dic
 	
 	return intersections
 
-func place_neutrals(galaxy: Galaxy) -> void:
+func place_neutrals(galaxy: Galaxy) -> Array[PackedInt32Array]:
+	
+	var changes: Array[PackedInt32Array] = []
 	
 	for system in galaxy.systems:
 		
 		if system.player_id == 0:
-			galaxy.add_ship(system.sys_id, Faction.FACTION_IDS.NONE, 0)
+			var new_add_change: PackedInt32Array = self.add_change.duplicate()
+			new_add_change[3] = system.sys_id
+			changes.append(new_add_change)
 			for i in range(0, ceil(system.neighbours.size()/2)):
-				galaxy.add_ship(system.sys_id, Faction.FACTION_IDS.NONE, 0)
+				changes.append(new_add_change)
+	
+	return changes

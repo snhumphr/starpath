@@ -104,22 +104,35 @@ func is_action_executable_base(actor_id: int, galaxy: Galaxy, selection: ActionS
 	
 	return self.is_action_valid(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var execution_log: Array[String] = []
 	
-	execution_log += self.execute_action_base(galaxy, selection, actor_id)
+	execution_log += self.execute_action_base(galaxy, selection, actor_id, changes)
 	
 	return execution_log
 
-func execute_action_base(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func execute_action_base(galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var execution_log: Array[String] = []
 	
 	for function in self.custom_execution_actions:
-		execution_log += function.call(self, galaxy, selection, actor_id)
+		execution_log += function.call(self, galaxy, selection, actor_id, changes)
 	
 	return execution_log
 
 func reserves_ships() -> bool:
 	return self.reserves_selected_ships
+
+func compile_change(change_type: Galaxy.ChangeTypes, player_id: int, faction_id: int, sys_id: int, dest_id: int, num_ships: int = 0, new_construction: StarSystem.CONSTRUCTIONS = StarSystem.CONSTRUCTIONS.EMPTY) -> PackedInt32Array:
+	var change: PackedInt32Array = PackedInt32Array([])
+	
+	change.append(change_type)
+	change.append(player_id)
+	change.append(faction_id)
+	change.append(sys_id)
+	change.append(dest_id)
+	change.append(num_ships)
+	change.append(new_construction)
+	
+	return change

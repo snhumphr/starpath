@@ -8,6 +8,6 @@ class_name Action
 
 @abstract func is_action_executable(actor_id: int, galaxy: Galaxy, selection: ActionSelection, action_queue: Array[FactionAction] = [], is_in_queue: bool = true) -> bool
 
-@abstract func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]
+@abstract func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]
 
 @abstract func reserves_ships() -> bool

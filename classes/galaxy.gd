@@ -1,6 +1,14 @@
 extends Resource
 class_name Galaxy
 
+enum ChangeTypes {
+	ADD_SHIP, # args; player_id, sys_id, number of ships
+	MOVE_SHIP, # args; player_id, starting sys_id, ending sys_id
+	REMOVE_SHIP, # args; player_id, sys_id, number of ships
+	CHANGE_CONSTRUCTION, # args; sys_id, new construction id
+	CHANGE_OWNERSHIP, # args; sys_id, new player_id
+}
+
 @export var size: Vector2
 @export var invalid_paths: Dictionary = {}
 @export var display_paths: Dictionary
@@ -165,6 +173,39 @@ func destroy_ship(sys_id: int, owner_id: int) -> void:
 			self.ships.remove_at(i)
 			break
 
+func apply_changes(changes: Array[PackedInt32Array]) -> void:
+	
+	for change in changes:
+		self.apply_change(change)
+
+func apply_change(change_list: PackedInt32Array) -> void:
+	
+	var change_type: ChangeTypes = change_list[0]
+	var changed_player_id: int = change_list[1]
+	var faction_id: int = change_list[2]
+	var sys_id: int = change_list[3]
+	var dest_id: int = change_list[4]
+	var num_ships: int = change_list[5]
+	var new_construction: StarSystem.CONSTRUCTIONS = change_list[6]
+	
+	match change_type:
+		self.ChangeTypes.ADD_SHIP:
+			for i in range(0, num_ships):
+				self.add_ship(sys_id, faction_id, changed_player_id)
+		self.ChangeTypes.MOVE_SHIP:
+			for i in range(0, num_ships):
+				self.move_ship(sys_id, changed_player_id, dest_id)
+		self.ChangeTypes.REMOVE_SHIP:
+			for i in range(0, num_ships):
+				self.destroy_ship(sys_id, changed_player_id)
+		self.ChangeTypes.CHANGE_CONSTRUCTION:
+			var system: StarSystem = self.get_system_from_id(sys_id)
+			system.construction =  new_construction
+		self.ChangeTypes.CHANGE_OWNERSHIP:
+			var system: StarSystem = self.get_system_from_id(sys_id)
+			system.player_id = changed_player_id
+			system.faction_id = faction_id
+
 func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
 	
 	var fleet_strength: int = 0
@@ -172,5 +213,7 @@ func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
 	fleet_strength += ships.size()
 	
 	fleet_strength += self.factions[player_id].calculate_tech_level() #TODO: TESTING *DEFINITELY* NEEDED HERE!!!
+	
+	#TODO: maybe make fortresses give a fleet strength bonus?
 	
 	return fleet_strength

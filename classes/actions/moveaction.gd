@@ -39,7 +39,7 @@ func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, 
 	
 	return self.is_action_valid_base(actor_id, galaxy, selection, action_queue, is_in_queue)
 
-func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int) -> Array[String]:
+func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
 	var ship_list: Array[Ship] = []
 	

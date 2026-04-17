@@ -1,8 +1,53 @@
 extends Node
 
-func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
-	
-	var new_galaxy: Galaxy = old_galaxy.duplicate()
+var retreat_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.MOVE_SHIP, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	1, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
+var destroy_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.REMOVE_SHIP, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	1, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
+var raze_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.CHANGE_CONSTRUCTION, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	0, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
+var ownership_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.CHANGE_OWNERSHIP, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	0, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
+const CHANGE_TYPE_INDEX: int = 0
+const PLAYER_ID_INDEX: int = 1
+const FACTION_ID_INDEX: int = 2
+const SYSTEM_ID_INDEX: int = 3
+const DEST_ID_INDEX: int = 4
+const NUM_SHIPS_INDEX: int = 5
+
+func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: #index 0 = turn report, index 1 = changes list
 	
 	print("Processing turn...")
 	
@@ -48,6 +93,7 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 	# then movement + hostile ship spawning
 	
 	var turn_report: Array[String] = []
+	var changes: Array[PackedInt32Array] = []
 	
 	var current_priority: int = lowest_priority
 	while current_priority <= highest_priority:
@@ -58,7 +104,7 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 				if action.action_priority == current_priority:
 					if action.is_action_executable(player_id, new_galaxy, action.bound_action_selection, action_queue):
 						turn_report.append(new_galaxy.players[player_id].player_name + " executing action " + action.action_name + ".")
-						for entry in action.execute_action(new_galaxy, action.bound_action_selection, player_id):
+						for entry in action.execute_action(new_galaxy, action.bound_action_selection, player_id, changes):
 							turn_report.append(entry)
 					else:
 						turn_report.append(new_galaxy.players[player_id].player_name + "'s action " + action.action_name + " failed to execute.")
@@ -84,7 +130,10 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		var system: StarSystem = new_galaxy.get_system_from_id(sys_id)
 		for player_id in battle_results[sys_id].keys():
 			for i in range(0, battle_results[sys_id][player_id].destroyed):
-				new_galaxy.destroy_ship(sys_id, player_id)
+				var new_destroy_change: PackedInt32Array = self.destroy_change.duplicate()
+				new_destroy_change[SYSTEM_ID_INDEX] = sys_id
+				new_destroy_change[PLAYER_ID_INDEX] = player_id
+				changes.append(new_destroy_change)
 			
 			var retreat_system_ids: Array[int] = []
 			
@@ -96,12 +145,19 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 			var attempted_retreats: int = battle_results[sys_id][player_id].retreating
 			for i in range(0, attempted_retreats):
 				if i < retreat_system_ids.size():
-					new_galaxy.move_ship(sys_id, player_id, retreat_system_ids[i])
+					var new_retreat_change: PackedInt32Array = self.retreat_change.duplicate()
+					new_retreat_change[SYSTEM_ID_INDEX] = sys_id
+					new_retreat_change[PLAYER_ID_INDEX] = player_id
+					new_retreat_change[DEST_ID_INDEX] = retreat_system_ids[i]
+					changes.append(new_retreat_change)
 					if not battle_results[sys_id][player_id].has("retreat_systems"):
 						battle_results[sys_id][player_id].retreat_systems = []
 					battle_results[sys_id][player_id].retreat_systems.append(retreat_system_ids[i])
 				else:
-					new_galaxy.destroy_ship(sys_id, player_id)
+					var new_destroy_change: PackedInt32Array = self.destroy_change.duplicate()
+					new_destroy_change[SYSTEM_ID_INDEX] = sys_id
+					new_destroy_change[PLAYER_ID_INDEX] = player_id
+					changes.append(new_destroy_change)
 					battle_results[sys_id][player_id].retreating -= 1
 					battle_results[sys_id][player_id].destroyed += 1
 			
@@ -113,11 +169,17 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
 			var occupier_id: int = occupying_ships.keys()[0]
 			if system.player_id != occupier_id:
-				system.player_id = occupier_id
-				system.faction_id = new_galaxy.players[occupier_id].faction_id
+				var new_ownership_change: PackedInt32Array = self.ownership_change.duplicate()
+				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
+				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
+				new_ownership_change[FACTION_ID_INDEX] = new_galaxy.players[occupier_id].faction_id
+				changes.append(new_ownership_change)
 				turn_report.append(new_galaxy.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
 				if new_galaxy.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
 					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
+					var new_raze_change: PackedInt32Array = self.raze_change.duplicate()
+					new_raze_change[SYSTEM_ID_INDEX] = system.sys_id
+					changes.append(new_raze_change)
 					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
 	
 	#regenerate all faction resources + increase tech levels
@@ -132,7 +194,9 @@ func process_turn(old_galaxy: Galaxy, orders_dict: Dictionary) -> Galaxy:
 	if not new_galaxy.in_setup:
 		new_galaxy.current_turn += 1
 	
-	return new_galaxy
+	var results: Array[Array] = [turn_report, changes]
+	
+	return results
 
 func generate_battle_log(galaxy: Galaxy, sys_id: int, battle_report: Dictionary) -> Array[String]:
 	
