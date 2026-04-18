@@ -20,6 +20,26 @@ var destroy_change: PackedInt32Array = PackedInt32Array([
 	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
 ])
 
+var raze_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.CHANGE_CONSTRUCTION, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	0, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
+var ownership_change: PackedInt32Array = PackedInt32Array([
+	Galaxy.ChangeTypes.CHANGE_OWNERSHIP, #change type
+	0, #player id
+	0, #faction id
+	0, #system id
+	0, #dest id
+	0, #num ships
+	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+])
+
 var inc_setup_change: PackedInt32Array = PackedInt32Array([
 	Galaxy.ChangeTypes.ADVANCE_SETUP, #change type
 	0, #player id
@@ -101,6 +121,9 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 		
 		current_priority += 1
 	
+	var combat_galaxy: Galaxy = new_galaxy.duplicate(true)
+	combat_galaxy.apply_changes(changes)
+	
 	#combat phase
 	
 	var battlefield_system_ids: Array[int] = []
@@ -108,22 +131,23 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 	var battle_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	battle_rng.randomize()
 	
-	for system in new_galaxy.systems:
-		var occupying_ships = new_galaxy.get_ships_in_system(system.sys_id)
+	for system in combat_galaxy.systems:
+		var occupying_ships = combat_galaxy.get_ships_in_system(system.sys_id)
 		if occupying_ships.keys().size() > 1:
 			battlefield_system_ids.append(system.sys_id)
-			battle_results[system.sys_id] = self.process_battle(new_galaxy, system, battle_rng)
+			battle_results[system.sys_id] = self.process_battle(combat_galaxy, system, battle_rng)
 	
 	print(battle_results)
 	
 	for sys_id in battle_results.keys():
-		var system: StarSystem = new_galaxy.get_system_from_id(sys_id)
+		var system: StarSystem = combat_galaxy.get_system_from_id(sys_id)
 		for player_id in battle_results[sys_id].keys():
 			for i in range(0, battle_results[sys_id][player_id].destroyed):
 				var new_destroy_change: PackedInt32Array = self.destroy_change.duplicate()
 				new_destroy_change[SYSTEM_ID_INDEX] = sys_id
 				new_destroy_change[PLAYER_ID_INDEX] = player_id
 				changes.append(new_destroy_change)
+				combat_galaxy.apply_change(new_destroy_change)
 			
 			var retreat_system_ids: Array[int] = []
 			
@@ -140,6 +164,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 					new_retreat_change[PLAYER_ID_INDEX] = player_id
 					new_retreat_change[DEST_ID_INDEX] = retreat_system_ids[i]
 					changes.append(new_retreat_change)
+					combat_galaxy.apply_change(new_retreat_change)
 					if not battle_results[sys_id][player_id].has("retreat_systems"):
 						battle_results[sys_id][player_id].retreat_systems = []
 					battle_results[sys_id][player_id].retreat_systems.append(retreat_system_ids[i])
@@ -148,18 +173,38 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 					new_destroy_change[SYSTEM_ID_INDEX] = sys_id
 					new_destroy_change[PLAYER_ID_INDEX] = player_id
 					changes.append(new_destroy_change)
+					combat_galaxy.apply_change(new_destroy_change)
 					battle_results[sys_id][player_id].retreating -= 1
 					battle_results[sys_id][player_id].destroyed += 1
 			
-		turn_report += self.generate_battle_log(new_galaxy, sys_id, battle_results[sys_id])
+		turn_report += self.generate_battle_log(combat_galaxy, sys_id, battle_results[sys_id])
+	
+	
+	
+	#systems change ownership here, usually destroying enemy buildings
+	for system in combat_galaxy.systems:
+		var occupying_ships = combat_galaxy.get_ships_in_system(system.sys_id)
+		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
+			var occupier_id: int = occupying_ships.keys()[0]
+			if system.player_id != occupier_id:
+				print("awoo")
+				var new_ownership_change: PackedInt32Array = ownership_change.duplicate()
+				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
+				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
+				new_ownership_change[FACTION_ID_INDEX] = combat_galaxy.players[occupier_id].faction_id
+				changes.append(new_ownership_change)
+				turn_report.append(combat_galaxy.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
+				if combat_galaxy.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
+					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
+					var new_raze_change: PackedInt32Array = raze_change.duplicate()
+					new_raze_change[SYSTEM_ID_INDEX] = system.sys_id
+					changes.append(new_raze_change)
+					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
 	
 	#regenerate all faction resources + increase tech levels
 	
-	if new_galaxy.in_setup:
+	if combat_galaxy.in_setup:
 		changes.append(self.inc_setup_change)
-	
-	if not new_galaxy.in_setup:
-		new_galaxy.current_turn += 1
 	
 	var results: Array[Array] = [changes, turn_report]
 	

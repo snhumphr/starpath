@@ -193,47 +193,11 @@ func apply_changes(changes: Array[PackedInt32Array]) -> Array[String]:
 	for change in changes:
 		self.apply_change(change)
 	
-	var raze_change: PackedInt32Array = PackedInt32Array([
-		Galaxy.ChangeTypes.CHANGE_CONSTRUCTION, #change type
-		0, #player id
-		0, #faction id
-		0, #system id
-		0, #dest id
-		0, #num ships
-		StarSystem.CONSTRUCTIONS.EMPTY, #new construction
-	])
-
-	var ownership_change: PackedInt32Array = PackedInt32Array([
-		Galaxy.ChangeTypes.CHANGE_OWNERSHIP, #change type
-		0, #player id
-		0, #faction id
-		0, #system id
-		0, #dest id
-		0, #num ships
-		StarSystem.CONSTRUCTIONS.EMPTY, #new construction
-	])
-	
-	#systems change ownership here, usually destroying enemy buildings
-	for system in self.systems:
-		var occupying_ships = self.get_ships_in_system(system.sys_id)
-		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
-			var occupier_id: int = occupying_ships.keys()[0]
-			if system.player_id != occupier_id:
-				var new_ownership_change: PackedInt32Array = ownership_change.duplicate()
-				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
-				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
-				new_ownership_change[FACTION_ID_INDEX] = self.players[occupier_id].faction_id
-				self.apply_change(new_ownership_change)
-				turn_report.append(self.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
-				if self.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
-					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
-					var new_raze_change: PackedInt32Array = raze_change.duplicate()
-					new_raze_change[SYSTEM_ID_INDEX] = system.sys_id
-					self.apply_change(new_raze_change)
-					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
-	
 	if self.setup_index >= self.setup_order.size():
 		self.in_setup = false
+	
+	if not self.in_setup:
+		self.current_turn += 1
 	
 	return turn_report
 

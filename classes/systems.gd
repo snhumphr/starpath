@@ -101,7 +101,7 @@ const SYSTEM_NAMES: Array[String] = [
 @export var pos: Vector2
 @export var radius: float
 
-func _init(new_id: int, new_gal_pos: Vector2) -> void:
+func init(new_id: int, new_gal_pos: Vector2) -> void:
 	self.sys_id = new_id
 	self.gal_pos = new_gal_pos
 

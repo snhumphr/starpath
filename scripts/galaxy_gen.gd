@@ -72,7 +72,8 @@ func generate_random_galaxy(galaxy_seed: int) -> Galaxy:
 	
 	coord_index = 0
 	while coord_index < coords.size():
-		var new_system: StarSystem = StarSystem.new(coord_index, coords[coord_index])
+		var new_system: StarSystem = StarSystem.new()
+		new_system.init(coord_index, coords[coord_index])
 		new_system.gal_pos = new_system.gal_pos + new_system.offset()
 		new_galaxy.systems.append(new_system)
 		coord_index += 1
