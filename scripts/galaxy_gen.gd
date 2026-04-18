@@ -145,17 +145,24 @@ func try_neighbour_connection(system_a: StarSystem, system_b: StarSystem) -> Dic
 	
 	return intersections
 
-func place_neutrals(galaxy: Galaxy) -> Array[PackedInt32Array]:
+func place_neutrals(galaxy: Galaxy, changes: Array[PackedInt32Array]) -> void:
 	
-	var changes: Array[PackedInt32Array] = []
+	var empty_system_ids: Array[int] = []
 	
 	for system in galaxy.systems:
-		
 		if system.player_id == 0:
-			var new_add_change: PackedInt32Array = self.add_change.duplicate()
-			new_add_change[3] = system.sys_id
-			changes.append(new_add_change)
-			for i in range(0, ceil(system.neighbours.size()/2)):
-				changes.append(new_add_change)
+			var is_targeted: bool = false
+			for change in changes:
+				if system.sys_id == change[3]:
+					is_targeted = true
+					break
+			if not is_targeted:
+				empty_system_ids.append(system.sys_id)
 	
-	return changes
+	for sys_id in empty_system_ids:
+		var system: StarSystem = galaxy.get_system_from_id(sys_id)
+		var new_add_change: PackedInt32Array = self.add_change.duplicate()
+		new_add_change[3] = sys_id
+		changes.append(new_add_change)
+		for i in range(0, ceil(system.neighbours.size()/2)):
+			changes.append(new_add_change)

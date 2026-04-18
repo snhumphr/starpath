@@ -160,7 +160,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 			var turn_array: Array[Array] = self.TurnProcessor.process_turn(self.galaxy, {wanted_network_id: self.turn_orders[wanted_network_id]})
 			for change in turn_array[0]:
 				if change[0] == Galaxy.ChangeTypes.ADVANCE_SETUP and self.galaxy.setup_index == self.galaxy.setup_order.size() -1:
-					turn_array[0] += self.GalaxyGen.place_neutrals(self.galaxy)
+					self.GalaxyGen.place_neutrals(self.galaxy, turn_array[0])
 			rpc("receive_turn", turn_array[0])
 
 @rpc("authority", "call_local", "reliable")
