@@ -45,6 +45,10 @@ func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
 	for key in players_dict:
 		temp_network_id_list.append(key)
 	
+	temp_network_id_list.sort()
+	
+	print("Network ID list: " + str(temp_network_id_list))
+	
 	var index: int = 1
 	for net_id in temp_network_id_list:
 		players_dict[net_id].player_id = index
@@ -68,6 +72,7 @@ func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
 	
 	self.galaxy.players = [neutral_player]
 	self.galaxy.player_id = player_ids[multiplayer.get_unique_id()]
+	print("Initial player id assignment: " + str(self.galaxy.player_id))
 	
 	self.galaxy.factions[0] = Faction.new()
 	self.galaxy.factions[0].player_id = 0
@@ -106,9 +111,9 @@ func attempt_submit_turn() -> void:
 				end_turn_allowed = false
 				break
 	
-	if self.galaxy.in_setup and self.galaxy.player_id != self.galaxy.players[self.galaxy.setup_index].player_id:
+	if self.galaxy.in_setup and self.galaxy.player_id != self.galaxy.setup_order[self.galaxy.setup_index]:
 		end_turn_allowed = false
-		print("Game is currently waiting on player #" + str(self.galaxy.players[self.galaxy.setup_index].player_id) +", not " + str(self.galaxy.player_id))
+		print("Game is currently waiting on player #" + str(self.galaxy.setup_order[self.galaxy.setup_index]) +", not " + str(self.galaxy.player_id))
 	
 	if end_turn_allowed:
 		print("Turn submitted.")
