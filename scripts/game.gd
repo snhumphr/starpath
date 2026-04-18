@@ -150,7 +150,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 			orders_dict[player_ids[key]] = self.turn_orders[key]
 		
 		var turn_array: Array[Array] = self.TurnProcessor.process_turn(self.galaxy, orders_dict)
-		rpc("receive_turn", turn_array[0]) 
+		rpc("receive_turn", turn_array[0], turn_array[1]) 
 	elif galaxy.in_setup:
 		var wanted_network_id: int = -1
 		for player in self.galaxy.players:
@@ -161,12 +161,13 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 			for change in turn_array[0]:
 				if change[0] == Galaxy.ChangeTypes.ADVANCE_SETUP and self.galaxy.setup_index == self.galaxy.setup_order.size() -1:
 					self.GalaxyGen.place_neutrals(self.galaxy, turn_array[0])
-			rpc("receive_turn", turn_array[0])
+			rpc("receive_turn", turn_array[0], turn_array[1])
 
 @rpc("authority", "call_local", "reliable")
-func receive_turn(received_changes: Array[PackedInt32Array]) -> void:
+func receive_turn(received_changes: Array[PackedInt32Array], turn_report: Array[String]) -> void:
 	print("New turn received!")
-	self.galaxy.apply_changes(received_changes)
+	turn_report += self.galaxy.apply_changes(received_changes)
+	print(turn_report)
 	self.ActionPanel.init(self.galaxy)
 	self.reset_selections()
 	self.update_map()

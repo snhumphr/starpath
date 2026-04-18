@@ -41,8 +41,8 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, c
 	
 		var new_build_change: PackedInt32Array = build_change.duplicate()
 		new_build_change[1] = actor_id
-		new_build_change[2] = system.sys_id
-		new_build_change[5] = self.construction_type
+		new_build_change[3] = system.sys_id
+		new_build_change[6] = self.construction_type
 		changes.append(new_build_change)
 	
 		if self.ships_built > 0:
@@ -68,17 +68,17 @@ func build_ships(system: StarSystem, galaxy: Galaxy, actor_id: int, num_ships: i
 		StarSystem.CONSTRUCTIONS.EMPTY, #new construction 6
 	])
 	
-	for i in range(0, num_ships):
-		var new_ship_change: PackedInt32Array = add_ship_change.duplicate()
-		new_ship_change[1] = actor_id
-		new_ship_change[2] = galaxy.players[actor_id].faction_id
-		new_ship_change[3] = system.sys_id
-		changes.append(new_ship_change)
-		build_message += "    " +str(self.ships_built) + " ship"
-		if self.ships_built > 1:
-			build_message += "s"
-		build_message += " built at " + system.get_system_name()
-	
+	var new_ship_change: PackedInt32Array = add_ship_change.duplicate()
+	new_ship_change[1] = actor_id
+	new_ship_change[2] = galaxy.players[actor_id].faction_id
+	new_ship_change[3] = system.sys_id
+	new_ship_change[5] = self.ships_built
+	changes.append(new_ship_change)
+	build_message += "    " +str(self.ships_built) + " ship"
+	if self.ships_built > 1:
+		build_message += "s"
+	build_message += " built at " + system.get_system_name()
+
 	return build_message
 
 func get_construction_message(system: StarSystem) -> String:

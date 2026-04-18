@@ -20,26 +20,6 @@ var destroy_change: PackedInt32Array = PackedInt32Array([
 	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
 ])
 
-var raze_change: PackedInt32Array = PackedInt32Array([
-	Galaxy.ChangeTypes.CHANGE_CONSTRUCTION, #change type
-	0, #player id
-	0, #faction id
-	0, #system id
-	0, #dest id
-	0, #num ships
-	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
-])
-
-var ownership_change: PackedInt32Array = PackedInt32Array([
-	Galaxy.ChangeTypes.CHANGE_OWNERSHIP, #change type
-	0, #player id
-	0, #faction id
-	0, #system id
-	0, #dest id
-	0, #num ships
-	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
-])
-
 var inc_setup_change: PackedInt32Array = PackedInt32Array([
 	Galaxy.ChangeTypes.ADVANCE_SETUP, #change type
 	0, #player id
@@ -173,28 +153,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 			
 		turn_report += self.generate_battle_log(new_galaxy, sys_id, battle_results[sys_id])
 	
-	#systems change ownership here, usually destroying enemy buildings
-	for system in new_galaxy.systems:
-		var occupying_ships = new_galaxy.get_ships_in_system(system.sys_id)
-		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
-			var occupier_id: int = occupying_ships.keys()[0]
-			if system.player_id != occupier_id:
-				var new_ownership_change: PackedInt32Array = self.ownership_change.duplicate()
-				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
-				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
-				new_ownership_change[FACTION_ID_INDEX] = new_galaxy.players[occupier_id].faction_id
-				changes.append(new_ownership_change)
-				turn_report.append(new_galaxy.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
-				if new_galaxy.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
-					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
-					var new_raze_change: PackedInt32Array = self.raze_change.duplicate()
-					new_raze_change[SYSTEM_ID_INDEX] = system.sys_id
-					changes.append(new_raze_change)
-					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
-	
 	#regenerate all faction resources + increase tech levels
-	
-	print(turn_report)
 	
 	if new_galaxy.in_setup:
 		changes.append(self.inc_setup_change)

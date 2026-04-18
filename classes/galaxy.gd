@@ -11,6 +11,13 @@ enum ChangeTypes {
 	RESEARCH, # uses player_id to find the faction + uses num_ships as tech points
 }
 
+const CHANGE_TYPE_INDEX: int = 0
+const PLAYER_ID_INDEX: int = 1
+const FACTION_ID_INDEX: int = 2
+const SYSTEM_ID_INDEX: int = 3
+const DEST_ID_INDEX: int = 4
+const NUM_SHIPS_INDEX: int = 5
+
 @export var size: Vector2
 @export var invalid_paths: Dictionary = {}
 @export var display_paths: Dictionary
@@ -96,12 +103,14 @@ func get_constructions_owned_by_player(owning_player_id: int) -> Dictionary:
 	
 	var construction_dict: Dictionary = {}
 	var owned_systems: Array[StarSystem] = self.get_systems_owned_by_player(owning_player_id)
+	#print("Systems owned by player id # "+ str(owning_player_id) + " : " + str(owned_systems))
 	for system in owned_systems:
 		if not construction_dict.has(system.construction):
 			construction_dict[system.construction] = [system.sys_id]
 		else:
 			construction_dict[system.construction].append(system.sys_id)
 	
+	#print(construction_dict)
 	return construction_dict
 
 func get_ships_in_system(sys_id: int) -> Dictionary:
@@ -145,8 +154,10 @@ func get_ships_by_player() -> Dictionary:
 	for player in self.players:
 		ship_dict[player.player_id] = []
 	
-	for ship in self.ships:
-		ship_dict[ship.player_id].append(ship)
+	for system in self.systems:
+		var system_dict: Dictionary = self.get_ships_in_system(system.sys_id)
+		for key in system_dict:
+			ship_dict[key] += system_dict[key]
 	
 	return ship_dict
 
@@ -175,10 +186,56 @@ func destroy_ship(sys_id: int, owner_id: int) -> void:
 			self.ships.remove_at(i)
 			break
 
-func apply_changes(changes: Array[PackedInt32Array]) -> void:
+func apply_changes(changes: Array[PackedInt32Array]) -> Array[String]:
+	
+	var turn_report: Array[String] = []
 	
 	for change in changes:
 		self.apply_change(change)
+	
+	var raze_change: PackedInt32Array = PackedInt32Array([
+		Galaxy.ChangeTypes.CHANGE_CONSTRUCTION, #change type
+		0, #player id
+		0, #faction id
+		0, #system id
+		0, #dest id
+		0, #num ships
+		StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+	])
+
+	var ownership_change: PackedInt32Array = PackedInt32Array([
+		Galaxy.ChangeTypes.CHANGE_OWNERSHIP, #change type
+		0, #player id
+		0, #faction id
+		0, #system id
+		0, #dest id
+		0, #num ships
+		StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+	])
+	
+	#systems change ownership here, usually destroying enemy buildings
+	for system in self.systems:
+		var occupying_ships = self.get_ships_in_system(system.sys_id)
+		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
+			var occupier_id: int = occupying_ships.keys()[0]
+			if system.player_id != occupier_id:
+				var new_ownership_change: PackedInt32Array = ownership_change.duplicate()
+				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
+				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
+				new_ownership_change[FACTION_ID_INDEX] = self.players[occupier_id].faction_id
+				self.apply_change(new_ownership_change)
+				turn_report.append(self.players[occupier_id].player_name + " now occupies " + system.get_system_name() + ".")
+				if self.in_setup == false and system.construction != StarSystem.CONSTRUCTIONS.EMPTY:
+					system.construction = StarSystem.CONSTRUCTIONS.EMPTY
+					var new_raze_change: PackedInt32Array = raze_change.duplicate()
+					new_raze_change[SYSTEM_ID_INDEX] = system.sys_id
+					self.apply_change(new_raze_change)
+					turn_report.append("The construction present at " + system.get_system_name() + " was destroyed in the process.")
+	
+	if self.setup_index >= self.setup_order.size():
+		self.in_setup = false
+	
+	return turn_report
 
 func apply_change(change_list: PackedInt32Array) -> void:
 	
@@ -212,8 +269,6 @@ func apply_change(change_list: PackedInt32Array) -> void:
 			faction.increase_tech_points(num_ships)
 		self.ChangeTypes.ADVANCE_SETUP:
 			self.setup_index += 1
-			if self.setup_index >= self.setup_order.size():
-				self.in_setup = false
 		_:
 			printerr("Invalid change type " + str(change_type))
 			assert(false)
