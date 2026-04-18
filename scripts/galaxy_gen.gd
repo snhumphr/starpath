@@ -155,6 +155,8 @@ func place_neutrals(galaxy: Galaxy, changes: Array[PackedInt32Array]) -> void:
 			var is_targeted: bool = false
 			for change in changes:
 				if system.sys_id == change[3]:
+					if system.sys_id == 0:
+						print(change)
 					is_targeted = true
 					break
 			if not is_targeted:

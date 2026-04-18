@@ -64,6 +64,7 @@ func swap_to_lobby() -> void:
 	
 	self.get_node("MenuBar").set_visible(false)
 	self.Lobby.set_visible(true)
+	current_profile.colour = str(current_profile.colour)
 	print(current_profile)
 	var colour_list: PackedStringArray = self.current_profile.colour.format({"(":"", ")":""}, "_").split(", ")
 	self.Lobby.init(self.current_profile.name, Color(float(colour_list[0]), float(colour_list[1]), float(colour_list[2])))

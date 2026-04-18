@@ -44,7 +44,7 @@ var inc_setup_change: PackedInt32Array = PackedInt32Array([
 	Galaxy.ChangeTypes.ADVANCE_SETUP, #change type
 	0, #player id
 	Faction.FACTION_IDS.NONE, #faction id
-	0, #system id
+	-1, #system id #this is set to -1 as a hack to avoid neutrals not spawning in system #0
 	0, #dest id
 	0, #num ships
 	StarSystem.CONSTRUCTIONS.EMPTY, #new construction
@@ -178,8 +178,6 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 					battle_results[sys_id][player_id].destroyed += 1
 			
 		turn_report += self.generate_battle_log(combat_galaxy, sys_id, battle_results[sys_id])
-	
-	
 	
 	#systems change ownership here, usually destroying enemy buildings
 	for system in combat_galaxy.systems:
