@@ -106,6 +106,10 @@ func attempt_submit_turn() -> void:
 				end_turn_allowed = false
 				break
 	
+	if self.galaxy.in_setup and self.galaxy.player_id != self.galaxy.players[self.galaxy.setup_index].player_id:
+		end_turn_allowed = false
+		print("Game is currently waiting on player #" + str(self.galaxy.players[self.galaxy.setup_index].player_id) +", not " + str(self.galaxy.player_id))
+	
 	if end_turn_allowed:
 		print("Turn submitted.")
 		self.submit_orders(action_queue)
@@ -123,9 +127,6 @@ func submit_orders(submitted_actions: Array[FactionAction]) -> void:
 		selected_system_ids.append(action.bound_action_selection.export_systems_as_ids())
 		selected_ship_ids.append(action.bound_action_selection.export_ships_as_ids())
 	
-	self.action_queue = []
-	self.current_action = null
-	self.reset_selections()
 	get_tree().call_group("queued_action", "queue_free")
 	
 	rpc_id(1, "receive_orders", submitted_action_ids, selected_system_ids, selected_ship_ids)
@@ -167,6 +168,9 @@ func receive_turn(received_changes: Array[PackedInt32Array], turn_report: Array[
 	turn_report += self.galaxy.apply_changes(received_changes)
 	print(turn_report)
 	self.turn_orders = {}
+	self.action_queue = []
+	self.current_action = null
+	self.reset_selections()
 	self.ActionPanel.init(self.galaxy)
 	self.reset_selections()
 	self.update_map()
