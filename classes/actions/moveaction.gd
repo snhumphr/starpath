@@ -25,8 +25,9 @@ func is_action_valid(actor_id: int, galaxy: Galaxy, selection: ActionSelection, 
 	
 	if selection.selected_systems.size() > 0:
 		var starting_system: StarSystem = selection.selected_systems[0]
-		if starting_system.player_id != galaxy.player_id and starting_system.construction == StarSystem.CONSTRUCTIONS.FORTRESS:
+		if starting_system.player_id != actor_id and starting_system.construction == StarSystem.CONSTRUCTIONS.FORTRESS:
 			print("Cannot move out of a system with an enemy fortress.")
+			print("Fortress in system #" + str(starting_system.sys_id) + " is owned by player #" + str(starting_system.player_id) + ", not player #" + str(actor_id))
 			return false
 	
 	if self.system_slots.size() > 1 and selection.selected_systems.size() == self.system_slots.size():
