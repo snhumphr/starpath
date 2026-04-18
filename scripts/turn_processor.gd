@@ -185,7 +185,6 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 		if occupying_ships.keys().size() == 1: #TODO: make hidden ships not count for this
 			var occupier_id: int = occupying_ships.keys()[0]
 			if system.player_id != occupier_id:
-				print("awoo")
 				var new_ownership_change: PackedInt32Array = ownership_change.duplicate()
 				new_ownership_change[SYSTEM_ID_INDEX] = system.sys_id
 				new_ownership_change[PLAYER_ID_INDEX] = occupier_id
@@ -219,7 +218,7 @@ func generate_battle_log(galaxy: Galaxy, sys_id: int, battle_report: Dictionary)
 		if battle_report[player_id].victorious:
 			victor_name = galaxy.get_faction_name(player_id, 1)
 	
-	var battle_log_intro: String = "A battle occurred in the " + galaxy.get_system_from_id(sys_id).get_system_name() + " system between "
+	var battle_log_intro: String = "A battle occurred in " + galaxy.get_system_from_id(sys_id).get_system_name() + " between "
 	
 	var combatants_message: String = ""
 	var index: int = 0
@@ -255,7 +254,7 @@ func generate_casualty_report(galaxy: Galaxy, battle_report: Dictionary, player_
 	print(battle_report)
 	if battle_report.destroyed > 0 or battle_report.retreating > 0:
 		report = "$destroyed $faction ship$ds $were destroyed and $retreated $faction ship$rs fled"
-		if battle_report.retreat_systems.size() > 0:
+		if battle_report.has("retreat_systems") and battle_report.retreat_systems.size() > 0:
 			report += " to "
 			var retreat_message: String = ""
 			var index: int = 0

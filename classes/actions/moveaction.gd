@@ -51,22 +51,22 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, c
 	var dest_system: StarSystem = selection.selected_systems[self.system_slots.size()-1]
 	
 	var move_change: PackedInt32Array = PackedInt32Array([
-		Galaxy.ChangeTypes.MOVE_SHIP, #change type
-		0, #player id
-		0, #faction id
-		0, #system id
-		0, #dest id
-		1, #num ships
-		StarSystem.CONSTRUCTIONS.EMPTY, #new construction
+		Galaxy.ChangeTypes.MOVE_SHIP, #change type 0
+		0, #player id 1
+		0, #faction id 2
+		0, #system id 3
+		0, #dest id 4
+		1, #num ships 5
+		StarSystem.CONSTRUCTIONS.EMPTY, #new construction 6
 	])
 	
 	for ship in ship_list:
 		var new_move_change: PackedInt32Array = move_change.duplicate()
-		move_change[1] = actor_id
-		move_change[3] = ship.system_id
-		move_change[4] = dest_system.sys_id
+		new_move_change[1] = actor_id
+		new_move_change[3] = ship.system_id
+		new_move_change[4] = dest_system.sys_id
 		changes.append(new_move_change)
 	
 	#TODO: MAKE THIS WORK WITH CUSTOM EXECUTION ACTIONS
 	
-	return ["    " + str(ship_list.size()) + " ships moved to system " + dest_system.get_system_name()]
+	return ["    " + str(ship_list.size()) + " ships moved to " + dest_system.get_system_name()]

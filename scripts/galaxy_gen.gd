@@ -148,6 +148,8 @@ func try_neighbour_connection(system_a: StarSystem, system_b: StarSystem) -> Dic
 
 func place_neutrals(galaxy: Galaxy, changes: Array[PackedInt32Array]) -> void:
 	
+	return
+	
 	var empty_system_ids: Array[int] = []
 	
 	for system in galaxy.systems:

@@ -116,7 +116,7 @@ func rebuild_execution(executing_action: FactionAction, galaxy: Galaxy, selectio
 	
 	var own_faction: Faction = galaxy.factions[actor_id]
 	var old_tech_level: int = own_faction.calculate_tech_level()
-	var tech_change: int = own_faction.increase_tech_points(tech_point_change)
+	var tech_change: int = own_faction.increase_tech_points(tech_point_change) #TODO: update this for new action framework
 	
 	execution_log.append("    " + "Gained " + str(tech_point_change) + " tech points(" + str(num_tech_per_system) + " per owned system ")
 	if tech_change > 0:

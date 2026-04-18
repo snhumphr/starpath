@@ -217,6 +217,7 @@ func apply_change(change_list: PackedInt32Array) -> void:
 				self.add_ship(sys_id, faction_id, changed_player_id)
 		self.ChangeTypes.MOVE_SHIP:
 			for i in range(0, num_ships):
+				print(change_list)
 				self.move_ship(sys_id, changed_player_id, dest_id)
 		self.ChangeTypes.REMOVE_SHIP:
 			for i in range(0, num_ships):
