@@ -66,8 +66,9 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 	var lowest_priority: int = 100
 	var highest_priority: int = -100
 	
-	for player_id in orders_dict.keys():
-		var player_faction: Faction = new_galaxy.factions[player_id]
+	for network_id in orders_dict.keys():
+		var player_id: int = new_galaxy.get_player_id_from_network_id(network_id)
+		var player_faction: Faction = new_galaxy.factions[new_galaxy.players[player_id].player_id]
 		var action_list: Array[FactionAction]
 		if new_galaxy.in_setup:
 			action_list = player_faction.setup_actions
@@ -76,7 +77,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 		
 		print("Processing " + new_galaxy.players[player_id].player_name + "'s turn...")
 		var index: int = 0
-		for action_id in orders_dict[player_id].action_ids:
+		for action_id in orders_dict[network_id].action_ids:
 			
 			for action in action_list:
 				if action_id == action.get_action_id():
@@ -84,7 +85,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 					highest_priority = max(highest_priority, action.action_priority)
 					var new_action: FactionAction = action.duplicate()
 					new_action.bound_action_selection = ActionSelection.new()
-					new_action.bound_action_selection.load_selection(new_galaxy, orders_dict[player_id].system_ids[index], orders_dict[player_id].ship_ids[index])
+					new_action.bound_action_selection.load_selection(new_galaxy, orders_dict[network_id].system_ids[index], orders_dict[network_id].ship_ids[index])
 					if not actions_dict.has(player_id):
 						var action_array: Array[FactionAction] = [new_action]
 						actions_dict[player_id] = action_array

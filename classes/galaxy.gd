@@ -39,7 +39,19 @@ func end_setup() -> void:
 	self.actions_disabled = false
 
 func get_own_faction() -> Faction:
-	return factions[player_id]
+	return factions[self.player_id]
+
+func get_player_id_from_network_id(network_id: int) -> int:
+	var player: Player
+	for possible_player_match in self.players:
+		if possible_player_match.network_id == network_id:
+			player = possible_player_match
+			break
+	
+	if player == null:
+		printerr("No player with network id #" + str(network_id) + " exists in this galaxy!")
+	
+	return player.player_id
 
 func get_faction_name(owner_id: int, index: int, append_player_name: bool = true) -> String:
 	
