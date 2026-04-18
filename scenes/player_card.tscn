@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://6wdnxf8o1xy4"]
+[gd_scene format=3 uid="uid://6wdnxf8o1xy4"]
 
 [ext_resource type="Script" uid="uid://ca64rrdrixbsv" path="res://scripts/player_card.gd" id="1_kx8ed"]
 [ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="1_mvbqt"]
@@ -15,7 +15,7 @@ border_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvbqt"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="PlayerCard" type="MarginContainer" groups=["player_card"]]
+[node name="PlayerCard" type="MarginContainer" unique_id=2075879866 groups=["player_card"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,30 +28,30 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 script = ExtResource("1_kx8ed")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1811810486]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_mvbqt")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1523394394]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="NameRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="NameRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=1591951778]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow"]
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow" unique_id=943511137]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 
-[node name="PlayerName" type="Label" parent="PanelContainer/VBoxContainer/NameRow"]
+[node name="PlayerName" type="Label" parent="PanelContainer/VBoxContainer/NameRow" unique_id=1944508834]
 layout_mode = 2
 text = "Name: "
 
-[node name="NameEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/NameRow"]
+[node name="NameEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/NameRow" unique_id=2126680367]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -61,22 +61,22 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_nx7or")
 placeholder_text = "Stargazer"
 max_length = 12
 
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow"]
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/NameRow" unique_id=1415935868]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 
-[node name="ColourRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="ColourRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=358692891]
 layout_mode = 2
 
-[node name="VSeparator3" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow"]
+[node name="VSeparator3" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow" unique_id=402634050]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 
-[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/ColourRow"]
+[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/ColourRow" unique_id=1985893449]
 layout_mode = 2
 text = "Colour:"
 
-[node name="ColourButton" type="ColorPickerButton" parent="PanelContainer/VBoxContainer/ColourRow"]
+[node name="ColourButton" type="ColorPickerButton" parent="PanelContainer/VBoxContainer/ColourRow" unique_id=79379415]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Pick Color"
@@ -84,26 +84,26 @@ color = Color(0, 0, 1, 1)
 edit_alpha = false
 edit_intensity = false
 
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow"]
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/ColourRow" unique_id=1572974991]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")
 
-[node name="FactionRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="FactionRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=1960247520]
 layout_mode = 2
 
-[node name="VSeparator4" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
+[node name="VSeparator4" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow" unique_id=1183391395]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_foft5")
 
-[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/FactionRow"]
+[node name="ColourName" type="Label" parent="PanelContainer/VBoxContainer/FactionRow" unique_id=1545284377]
 layout_mode = 2
 text = "Faction:"
 
-[node name="FactionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/FactionRow"]
+[node name="FactionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/FactionRow" unique_id=2058676349]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow"]
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/VBoxContainer/FactionRow" unique_id=727327090]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_mvbqt")
 
