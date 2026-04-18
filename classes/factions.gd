@@ -52,10 +52,12 @@ func calculate_points_for_advancement() -> int:
 	
 	return num_points
 
-func increase_tech_points(amount: int) -> int: #Returns the number of tech levels gained from this increase
+func increase_tech_points(amount: int, permanent: bool = true) -> int: #Returns the number of tech levels gained from this increase
 	
 	var old_tech_level: int = self.calculate_tech_level()
 	self.tech_points += amount
 	var new_tech_level: int = self.calculate_tech_level()
-	
+	if not permanent:
+		self.tech_points -= amount
+
 	return new_tech_level - old_tech_level

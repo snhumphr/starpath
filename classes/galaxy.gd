@@ -231,6 +231,7 @@ func apply_change(change_list: PackedInt32Array) -> void:
 			system.faction_id = faction_id
 		self.ChangeTypes.RESEARCH:
 			var faction: Faction = self.factions[player_id]
+			print("Researching for " + str(num_ships) + " tech points...")
 			faction.increase_tech_points(num_ships)
 		self.ChangeTypes.ADVANCE_SETUP:
 			self.setup_index += 1

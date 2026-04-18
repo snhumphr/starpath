@@ -72,10 +72,10 @@ func build_ships(system: StarSystem, galaxy: Galaxy, actor_id: int, num_ships: i
 	new_ship_change[1] = actor_id
 	new_ship_change[2] = galaxy.players[actor_id].faction_id
 	new_ship_change[3] = system.sys_id
-	new_ship_change[5] = self.ships_built
+	new_ship_change[5] = num_ships
 	changes.append(new_ship_change)
-	build_message += "    " +str(self.ships_built) + " ship"
-	if self.ships_built > 1:
+	build_message += "    " +str(num_ships) + " ship"
+	if num_ships > 1:
 		build_message += "s"
 	build_message += " built at " + system.get_system_name()
 

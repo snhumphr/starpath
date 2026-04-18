@@ -116,11 +116,23 @@ func rebuild_execution(executing_action: FactionAction, galaxy: Galaxy, selectio
 	
 	var own_faction: Faction = galaxy.factions[actor_id]
 	var old_tech_level: int = own_faction.calculate_tech_level()
-	var tech_change: int = own_faction.increase_tech_points(tech_point_change) #TODO: update this for new action framework
+	var tech_change: int = own_faction.increase_tech_points(tech_point_change, false)
 	
-	execution_log.append("    " + "Gained " + str(tech_point_change) + " tech points(" + str(num_tech_per_system) + " per owned system ")
+	var research_change: PackedInt32Array = PackedInt32Array([
+		Galaxy.ChangeTypes.RESEARCH, #change type 0
+		actor_id, #player id 1
+		own_faction.fac_id, #faction id 2
+		0, #system id 3
+		0, #dest id 4
+		tech_point_change, #num ships 5
+		StarSystem.CONSTRUCTIONS.EMPTY, #new construction 6
+	])
+	
+	changes.append(research_change)
+	
+	execution_log.append("    " + "Gained " + str(tech_point_change) + " tech points(" + str(num_tech_per_system) + " per owned system).")
 	if tech_change > 0:
-		var change_text: String = "    " + "This increased tech level by " + str(tech_change) + ", from " + str(old_tech_level) + " to " + str(own_faction.calculate_tech_level())
+		var change_text: String = "    " + "This increased tech level by " + str(tech_change) + ", from " + str(old_tech_level) + " to " + str(old_tech_level+tech_change)
 		execution_log.append(change_text)
 	else:
 		execution_log.append("    " + "However, this was not enough to result in an overall tech level increase.")
@@ -139,7 +151,7 @@ func proliferate_execution(executing_action: FactionAction, galaxy: Galaxy, sele
 		print(num_ships)
 		if system.is_system_neighbour(hive_system):
 			num_ships += 1
-		execution_log.append(executing_action.build_ships(system, galaxy, actor_id, num_ships))
+		execution_log.append(executing_action.build_ships(system, galaxy, actor_id, num_ships, changes))
 	
 	return execution_log
 
