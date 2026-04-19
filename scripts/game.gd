@@ -34,11 +34,11 @@ signal change_current_action(action: FactionAction)
 signal add_action_to_queue(action: FactionAction)
 signal remove_action_from_queue(action_index: int)
 
-func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
+func start_game(players_dict: Dictionary, factions_dict: Dictionary, seed: int) -> void:
 	
 	self.selections = ActionSelection.new()
 	self.reset_highlight()
-	self.galaxy = GalaxyGen.init(53+53) #testing seed of 53 + 53
+	self.galaxy = GalaxyGen.init(seed)
 	
 	var temp_network_id_list: Array[int] = []
 	
@@ -54,6 +54,8 @@ func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
 		players_dict[net_id].player_id = index
 		self.player_ids[net_id] = index
 		index += 1
+	
+	print("Initial player IDs: " + str(self.player_ids))
 	
 	var neutral_player: Player = Player.new()
 	neutral_player.colour = Color.WHITE
@@ -87,7 +89,10 @@ func start_game(players_dict: Dictionary, factions_dict: Dictionary) -> void:
 	#self.galaxy.factions[self.galaxy.player_id].init(self.galaxy.player_id)
 	#self.galaxy.factions[self.galaxy.player_id].player_id = self.galaxy.player_id
 	
+	print("Initial factions dict: " + str(self.galaxy.factions))
+	
 	self.galaxy.setup_order = self.GalaxyGen.generate_setup_order(self.galaxy)
+	print("Initial galaxy setup order: " + str(self.galaxy.setup_order))
 	
 	await get_tree().process_frame
 	ActionPanel.init(self.galaxy)
@@ -233,7 +238,7 @@ func update_system_desc(system_id: int) -> void:
 
 func update_factions_desc() -> void:
 	var desc_template: String = "You are the $faction_name. It is year $current_turn and your technology level is $tech_level.
-You face the $enemy_names as your rivals.
+You face $enemy_names as your rivals.
 You possess $num_systems system$sys_s, $num_constructions construction$const_s and $num_ships ship$ship_s."
 	
 	var desc_format: Dictionary = {
@@ -251,33 +256,43 @@ You possess $num_systems system$sys_s, $num_constructions construction$const_s a
 	
 	var enemies_dict: Dictionary = {}
 	for player_id in self.galaxy.factions.keys():
-		if player_id != self.galaxy.player_id: #TODO: filter out indep factions too
+		if player_id != self.galaxy.player_id and player_id != 0:
 			enemies_dict[self.galaxy.get_faction_name(player_id, 1)] = self.galaxy.factions[player_id]
+			print("Player #" + str(player_id) + " is a proper opponent.")
+		else:
+			print("Player #" + str(player_id) + " is not a proper opponent.")
+			pass
+	
+	print("Enemies dict for faction desc: " + str(enemies_dict))
 	
 	var enemies_template: String = ""
 	var enemies_format: Dictionary = {}
-	var index: int = 0
-	while index < enemies_dict.keys().size() -1:
+	var start_index: int = 0
+	var index: int = start_index
+	if enemies_dict.keys().size() > 0:
+		while index < enemies_dict.keys().size() -1:
+				
+			if index != start_index:
+				enemies_template += ", "
 			
-		if index != 0:
-			enemies_template += ", "
-		
+			enemies_template += "$fac" + str(index)
+			var enemies_hint: String = "Tech level " + str(enemies_dict[enemies_dict.keys()[index]].calculate_tech_level())
+			enemies_hint += "(" + str(enemies_dict[enemies_dict.keys()[index]].calculate_points_for_advancement()) + " to next tech level)"
+			print("Getting the faction name for player # " + enemies_dict.keys()[index])
+			enemies_format["$fac" + str(index)] = "[hint=" + enemies_hint + "]" + enemies_dict.keys()[index]
+			enemies_format["$fac" + str(index)] += "[/hint]"
+			index += 1
+		if enemies_dict.keys().size() > 1:
+			enemies_template += " and "
 		enemies_template += "$fac" + str(index)
 		var enemies_hint: String = "Tech level " + str(enemies_dict[enemies_dict.keys()[index]].calculate_tech_level())
 		enemies_hint += "(" + str(enemies_dict[enemies_dict.keys()[index]].calculate_points_for_advancement()) + " to next tech level)"
-		enemies_format["$fac" + str(index)] = "[hint=" + enemies_hint + "]" + self.galaxy.get_faction_name(enemies_dict[enemies_dict.keys()[index]].player_id, 1)
+		enemies_format["$fac" + str(index)] = "[hint=" + enemies_hint + "]" + enemies_dict.keys()[index]
 		enemies_format["$fac" + str(index)] += "[/hint]"
-		index += 1
-	if enemies_dict.keys().size() > 1:
-		enemies_template += " and "
-	enemies_template += "$fac" + str(index)
-	var enemies_hint: String = "Tech level " + str(enemies_dict[enemies_dict.keys()[index]].calculate_tech_level())
-	enemies_hint += "(" + str(enemies_dict[enemies_dict.keys()[index]].calculate_points_for_advancement()) + " to next tech level)"
-	enemies_format["$fac" + str(index)] = "[hint=" + enemies_hint + "]" + self.galaxy.get_faction_name(enemies_dict[enemies_dict.keys()[index]].player_id, 1)
-	enemies_format["$fac" + str(index)] += "[/hint]"
-	enemies_template = enemies_template.format(enemies_format, "_")
-	
-	desc_format["$enemy_names"] = enemies_template
+		enemies_template = enemies_template.format(enemies_format, "_")
+		desc_format["$enemy_names"] = "the " + enemies_template
+	else:
+		desc_format["$enemy_names"] = "several minor powers"
 	
 	desc_format["$tech_level"] += "(" + str(self.galaxy.factions[self.galaxy.player_id].calculate_points_for_advancement()) + " points until the next tech level)"
 	

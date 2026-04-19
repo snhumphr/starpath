@@ -45,7 +45,7 @@ func execute_action(galaxy: Galaxy, selection: ActionSelection, actor_id: int, c
 	var ship_list: Array[Ship] = []
 	
 	for i in range(0, self.system_slots.size() -1):
-		var friendly_system_ships: Array = galaxy.get_ships_in_system(selection.selected_systems[i].sys_id).get(galaxy.player_id, [])
+		var friendly_system_ships: Array = galaxy.get_ships_in_system(selection.selected_systems[i].sys_id).get(actor_id, [])
 		for ship_index in range(0, selection.selected_ships[i]):
 			ship_list.append(friendly_system_ships[ship_index])
 	

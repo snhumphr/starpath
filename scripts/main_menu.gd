@@ -109,4 +109,4 @@ func _on_start_game(players: Dictionary, factions: Dictionary) -> void:
 	self.get_node("MenuBar").set_visible(false)
 	self.get_node("Lobby").set_visible(false)
 	game_node.set_visible(true)
-	game_node.start_game(players, factions)
+	game_node.start_game(players, factions, 53+53) #testing seed of 53 + 53

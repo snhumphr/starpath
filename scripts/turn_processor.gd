@@ -119,6 +119,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 							turn_report.append(entry)
 					else:
 						turn_report.append(new_galaxy.players[player_id].player_name + "'s action " + action.action_name + " failed to execute.")
+						#assert(false)
 		
 		current_priority += 1
 	

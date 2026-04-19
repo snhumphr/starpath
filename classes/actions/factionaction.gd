@@ -32,6 +32,8 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	
 	#var target_systems: Array[StarSystem] = selection.get_selected_systems()
 	
+	print("Player #" + str(actor_id) + " checking validity of action " + self.action_name)
+	
 	if self.is_setup_action != galaxy.in_setup:
 		print("Action cannot be used in current galaxy due to setup state")
 		return false
@@ -80,7 +82,7 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 			return false
 	
 	for i in range(0, selection.selected_systems.size()):
-		if not self.system_slots[i].is_system_valid(galaxy, selection, i, galaxy.player_id):
+		if not self.system_slots[i].is_system_valid(galaxy, selection, i, actor_id):
 			print("Selected systems not valid for action's slots")
 			return false
 	
