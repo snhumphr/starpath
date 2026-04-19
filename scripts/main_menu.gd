@@ -23,7 +23,7 @@ func _ready() -> void:
 		self.host_IP = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
 	else: #This needs testing on non-windows devices
 		self.host_IP = IP.get_local_addresses()[0] #TODO: likely needs serious filtering
-	self.host_IP = "localhost" #TESTING ONLY
+	#self.host_IP = "localhost" #TESTING ONLY
 		
 	print("HOST IP: " + self.host_IP)
 		
