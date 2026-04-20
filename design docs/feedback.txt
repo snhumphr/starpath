@@ -3,5 +3,6 @@
 -says that you have an extra construction(probably counting other players')
 -check that proliferate is being properly excluded by having swarm actions queued
 -if a minor faction wins it says they 'were' victorious instead of 'was' victorious
--MAJOR BUG: two different fleets of the same faction aren't fighting for some reason???
+-MAJOR BUG: two different fleets of the same faction aren't fighting for some reason??? 
+	-^couldn't replicate, but fixed a number of other combat bugs
 -plus and minus don't work for changing number of ships selected

@@ -340,10 +340,10 @@ func process_battle(galaxy: Galaxy, system: StarSystem, battle_rng: RandomNumber
 	for player_id in results_dict.keys():
 		losers_destroyed += results_dict[player_id].destroyed
 	
-	var winning_ships = combatant_ships[victor_index].size()
+	var winning_ships = combatant_ships[victor_id].size()
 	var casualties: int = floori(losers_destroyed / 2.0)
 	results_dict[victor_id].retreating = ceili(casualties / 2.0)
-	results_dict[victor_id].destroyed = casualties - results_dict[victor_index].retreating
+	results_dict[victor_id].destroyed = casualties - results_dict[victor_id].retreating
 	results_dict[victor_id].victorious = true
 	
 	return results_dict
