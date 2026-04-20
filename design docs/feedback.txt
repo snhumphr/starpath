@@ -1,0 +1,7 @@
+-error when using default colour on a new profile
+-starmap starts scrunched up in the top left corner initially
+-says that you have an extra construction(probably counting other players')
+-check that proliferate is being properly excluded by having swarm actions queued
+-if a minor faction wins it says they 'were' victorious instead of 'was' victorious
+-MAJOR BUG: two different fleets of the same faction aren't fighting for some reason???
+-plus and minus don't work for changing number of ships selected
