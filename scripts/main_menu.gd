@@ -2,13 +2,14 @@ extends Control
 
 var current_profile: Dictionary
 @onready var JoinRow: PanelContainer = self.get_node("MenuBar/VBoxContainer/JoinRow")
+@onready var HostRow: PanelContainer = self.get_node("MenuBar/VBoxContainer/HostRow")
 @onready var ProfileBox: PanelContainer = self.get_node("MenuBar/ProfileBox")
 @onready var Lobby: Control = self.get_node("Lobby")
 
 const PORT: int = 7653
 const PROFILE_PATH = "user://profile.json"
 const JOIN_IP_PATH = "user://joinip.txt"
-var host_IP: String
+var host_IP: String = "HOST IP NOT FOUND"
 var join_IP: String
 
 signal start_game(players: Dictionary)
@@ -23,10 +24,9 @@ func _ready() -> void:
 		self.host_IP = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
 	else: #This needs testing on non-windows devices
 		self.host_IP = IP.get_local_addresses()[0] #TODO: likely needs serious filtering
-	#self.host_IP = "localhost" #TESTING ONLY
-		
-	print("HOST IP: " + self.host_IP)
-		
+	
+	self.HostRow.get_node("MarginContainer/HBoxContainer/LineEdit").set_text(self.host_IP)
+	
 	if FileAccess.file_exists(JOIN_IP_PATH):
 		var file = FileAccess.open(JOIN_IP_PATH, FileAccess.READ)
 		var file_text: String = file.get_as_text()

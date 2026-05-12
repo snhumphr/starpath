@@ -77,7 +77,32 @@ grow_horizontal = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 60
 
-[node name="HostButton" type="Button" parent="MenuBar/VBoxContainer" unique_id=1834465800]
+[node name="HostRow" type="PanelContainer" parent="MenuBar/VBoxContainer" unique_id=2022663265]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("1_l6cm7")
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuBar/VBoxContainer/HostRow" unique_id=1629983443]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar/VBoxContainer/HostRow/MarginContainer" unique_id=1304861729]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MenuBar/VBoxContainer/HostRow/MarginContainer/HBoxContainer" unique_id=78814817]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "LOCAL IP:"
+
+[node name="LineEdit" type="Label" parent="MenuBar/VBoxContainer/HostRow/MarginContainer/HBoxContainer" unique_id=2094789382]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+
+[node name="HostButton" type="Button" parent="MenuBar/VBoxContainer/HostRow/MarginContainer/HBoxContainer" unique_id=1834465800]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 focus_mode = 0
@@ -273,6 +298,6 @@ visible = false
 layout_mode = 1
 
 [connection signal="start_game" from="." to="." method="_on_start_game"]
-[connection signal="pressed" from="MenuBar/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="MenuBar/VBoxContainer/HostRow/MarginContainer/HBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="MenuBar/VBoxContainer/JoinRow/MarginContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="MenuBar/ProfileBox/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
