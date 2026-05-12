@@ -282,7 +282,8 @@ func generate_casualty_report(galaxy: Galaxy, battle_report: Dictionary, player_
 			"$rs": "s",
 		}
 		
-		format_dict["$faction"] = Faction.FACTION_NAMES[galaxy.factions[player_id].fac_id][2]
+		#format_dict["$faction"] = Faction.FACTION_NAMES[galaxy.factions[player_id].fac_id][2]
+		format_dict["$faction"] = galaxy.get_faction_name(player_id, 2, true)
 		
 		if battle_report.destroyed > 0:
 			format_dict["$destroyed"] = str(battle_report.destroyed)
