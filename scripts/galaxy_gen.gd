@@ -166,6 +166,6 @@ func place_neutrals(galaxy: Galaxy, changes: Array[PackedInt32Array]) -> void:
 		var system: StarSystem = galaxy.get_system_from_id(sys_id)
 		var new_add_change: PackedInt32Array = self.add_change.duplicate()
 		new_add_change[3] = sys_id
-		changes.append(new_add_change)
+		#changes.append(new_add_change)
 		for i in range(0, ceil(system.neighbours.size()/2)):
 			changes.append(new_add_change)

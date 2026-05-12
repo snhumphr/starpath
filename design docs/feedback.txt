@@ -1,7 +1,10 @@
 -error when using default colour on a new profile
 -starmap starts scrunched up in the top left corner initially
+	-^couldn't replicate
 -says that you have an extra construction(probably counting other players')
+	-^couldn't replicate
 -check that proliferate is being properly excluded by having swarm actions queued
+	-^couldn't replicate
 -if a minor faction wins it says they 'were' victorious instead of 'was' victorious
 -MAJOR BUG: two different fleets of the same faction aren't fighting for some reason??? 
 	-^couldn't replicate, but fixed a number of other combat bugs
