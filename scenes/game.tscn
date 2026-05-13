@@ -29,7 +29,6 @@ vertical = true
 
 [node name="Game" type="Control" unique_id=520215667 groups=["game"]]
 layout_mode = 3
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -134,6 +133,10 @@ layout_mode = 2
 size_flags_vertical = 8
 mouse_filter = 2
 
+[node name="VSeparator2" type="VSeparator" parent="GameBox/BottomBar" unique_id=979287406]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_7jktm")
+
 [node name="LeftDesc" type="Label" parent="GameBox/BottomBar" unique_id=1178131268]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
@@ -175,6 +178,11 @@ theme_override_styles/disabled = ExtResource("1_80nbo")
 theme_override_styles/disabled_mirrored = ExtResource("1_80nbo")
 theme_override_styles/focus = ExtResource("3_fc0e3")
 text = "END TURN"
+
+[node name="Panel" type="Panel" parent="GameBox" unique_id=1384777657]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_u5sy4")
 
 [connection signal="add_action_to_queue" from="." to="." method="_on_add_action_to_queue"]
 [connection signal="change_current_action" from="." to="." method="_on_change_current_action"]

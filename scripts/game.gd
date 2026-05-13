@@ -339,6 +339,18 @@ func is_pos_along_starpath(pos: Vector2) -> Array[Vector2]:
 	
 	return []
 
+func open_menu() -> void:
+	
+	var menu_scene = load("res://scenes/escape_menu.tscn")
+	var instance: PopupPanel = menu_scene.instantiate()
+	self.add_child(instance)
+	print(self.size)
+	var popup_size: Rect2i = Rect2i(Vector2i(0, 0), Vector2i(self.size))
+	#popup_size = popup_size.grow_side(SIDE_BOTTOM, 99999)
+	print(popup_size)
+	instance.popup_on_parent(popup_size)
+	instance.grab_focus()
+
 func _input(event: InputEvent) -> void:
 	
 	if self.is_visible_in_tree():
@@ -352,6 +364,8 @@ func _input(event: InputEvent) -> void:
 			elif event.is_action("submit"):
 				#self.attempt_submit_turn()
 				pass
+			elif event.is_action("menu"):
+				self.open_menu()
 
 func _gui_input(event: InputEvent) -> void:
 	

@@ -1,0 +1,267 @@
+[gd_scene format=3 uid="uid://ec1a8cg7435f"]
+
+[ext_resource type="StyleBox" uid="uid://dephhdukxnrse" path="res://assets/panels/blackwhite.tres" id="1_rqb4o"]
+[ext_resource type="Script" uid="uid://bx3ts50ee1lvy" path="res://scripts/escape_menu.gd" id="2_02fc4"]
+[ext_resource type="StyleBox" uid="uid://d06nnm80ulbl1" path="res://assets/panels/blackyellow.tres" id="3_02fc4"]
+[ext_resource type="StyleBox" uid="uid://bvhyk6a3u0ojf" path="res://assets/panels/blackgrey.tres" id="4_mq06h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sluh"]
+bg_color = Color(0, 0, 0, 0.6156863)
+
+[node name="EscapeMenu" type="PopupPanel" unique_id=2070367451]
+oversampling_override = 1.0
+size = Vector2i(127, 100)
+visible = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_5sluh")
+script = ExtResource("2_02fc4")
+
+[node name="Control" type="Control" parent="." unique_id=1352025955]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TabContainer" type="TabContainer" parent="Control" unique_id=840679044]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -256.0
+offset_right = 256.0
+offset_bottom = 256.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_rqb4o")
+theme_override_styles/tabbar_background = ExtResource("1_rqb4o")
+theme_override_styles/tab_unselected = ExtResource("1_rqb4o")
+theme_override_styles/tab_hovered = ExtResource("3_02fc4")
+theme_override_styles/tab_selected = ExtResource("3_02fc4")
+theme_override_styles/tab_disabled = ExtResource("4_mq06h")
+current_tab = 0
+
+[node name="Turn Report" type="ScrollContainer" parent="Control/TabContainer" unique_id=150228640]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Turn Report" unique_id=517284769]
+custom_minimum_size = Vector2(0, 1000)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/TabContainer/Turn Report/VBoxContainer" unique_id=2028198764]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/TabContainer/Turn Report/VBoxContainer/MarginContainer" unique_id=482444921]
+layout_mode = 2
+bbcode_enabled = true
+text = "a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a
+a"
+fit_content = true
