@@ -36,6 +36,7 @@ queued_action=""
 player_card=""
 lobby=""
 menu=""
+popup=""
 
 [gui]
 

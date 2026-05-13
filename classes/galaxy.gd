@@ -27,6 +27,8 @@ const NUM_SHIPS_INDEX: int = 5
 @export var systems: Array[StarSystem] = []
 @export var ships: Array[Ship] = []
 
+@export var turn_reports: Array[String] = []
+
 @export var current_turn: int = 0
 @export var setup_index: int = 0
 @export var setup_order: Array[int] = []
@@ -261,3 +263,16 @@ func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
 	#TODO: maybe make fortresses give a fleet strength bonus?
 	
 	return fleet_strength
+
+func add_turn_report(raw_turn_report: Array[String]) -> void:
+	
+	var packed_turn_report: PackedStringArray = PackedStringArray(raw_turn_report)
+	
+	self.turn_reports.append("\n".join(packed_turn_report))
+
+func get_current_turn_report() -> String:
+	
+	if self.turn_reports.size() > 0:
+		return self.turn_reports[self.current_turn-1]
+	else:
+		return "Game is in setup..."

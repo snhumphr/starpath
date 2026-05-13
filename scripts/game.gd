@@ -176,7 +176,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 func receive_turn(received_changes: Array[PackedInt32Array], turn_report: Array[String]) -> void:
 	print("New turn received!")
 	turn_report += self.galaxy.apply_changes(received_changes)
-	print(turn_report)
+	self.galaxy.add_turn_report(turn_report)
 	self.turn_orders = {}
 	self.action_queue = []
 	self.current_action = null
@@ -185,6 +185,7 @@ func receive_turn(received_changes: Array[PackedInt32Array], turn_report: Array[
 	self.reset_selections()
 	self.update_map()
 	self.update_factions_desc()
+	self.open_menu()
 
 func update_map() -> void:
 	self.galaxy = MapFrame.init(self.galaxy, self.selections, self.highlighted, self.action_queue)
@@ -350,6 +351,7 @@ func open_menu() -> void:
 	print(popup_size)
 	instance.popup_on_parent(popup_size)
 	instance.grab_focus()
+	instance.load_turn_report(self.galaxy.get_current_turn_report())
 
 func _input(event: InputEvent) -> void:
 	

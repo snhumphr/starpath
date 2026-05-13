@@ -106,6 +106,8 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 	var turn_report: Array[String] = []
 	var changes: Array[PackedInt32Array] = []
 	
+	turn_report.append("Turn " + str(new_galaxy.current_turn) + "\n")
+	
 	var current_priority: int = lowest_priority
 	while current_priority <= highest_priority:
 		
