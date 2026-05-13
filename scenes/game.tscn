@@ -17,13 +17,22 @@ content_margin_right = 4.0
 content_margin_bottom = 0.0
 color = Color(1, 1, 1, 0)
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_7jktm"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_0tnpc"]
 content_margin_left = 0.0
-content_margin_top = 4.0
-content_margin_right = 0.0
+content_margin_right = 3.0
 content_margin_bottom = 4.0
 color = Color(1, 1, 1, 1)
 grow_begin = 6.0
+grow_end = 11.0
+thickness = 2
+vertical = true
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_7jktm"]
+content_margin_left = 0.0
+content_margin_right = 0.0
+color = Color(1, 1, 1, 1)
+grow_begin = 5.0
+grow_end = 20.0
 thickness = 2
 vertical = true
 
@@ -135,7 +144,7 @@ mouse_filter = 2
 
 [node name="VSeparator2" type="VSeparator" parent="GameBox/BottomBar" unique_id=979287406]
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_7jktm")
+theme_override_styles/separator = SubResource("StyleBoxLine_0tnpc")
 
 [node name="LeftDesc" type="Label" parent="GameBox/BottomBar" unique_id=1178131268]
 custom_minimum_size = Vector2(600, 0)
