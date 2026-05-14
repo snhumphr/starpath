@@ -361,7 +361,7 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey and not event.pressed:
 			
 			if not self.is_menu_open:
-				print("AWOOOO")
+				#print("AWOOOO")
 				if event.is_action("clear"):
 					self.reset_selections()
 					self.update_map()
@@ -374,7 +374,7 @@ func _input(event: InputEvent) -> void:
 				elif event.is_action("menu"):
 					self.open_menu()
 			else:
-				print("SNEK")
+				#print("SNEK")
 				self.is_menu_open = false
 				#get_tree().call_group("popup", "queue_free")
 
