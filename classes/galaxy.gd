@@ -27,7 +27,7 @@ const NUM_SHIPS_INDEX: int = 5
 @export var systems: Array[StarSystem] = []
 @export var ships: Array[Ship] = []
 
-@export var turn_reports: Array[String] = []
+@export var turn_reports: Dictionary = {}
 
 @export var current_turn: int = 0
 @export var setup_index: int = 0
@@ -267,8 +267,12 @@ func calculate_fleet_strength(player_id: int, ships: Array[Ship]) -> int:
 func add_turn_report(raw_turn_report: Array[String]) -> void:
 	
 	var packed_turn_report: PackedStringArray = PackedStringArray(raw_turn_report)
+	var turn_report_string: String = "\n".join(packed_turn_report)
 	
-	self.turn_reports.append("\n".join(packed_turn_report))
+	if not self.turn_reports.has(self.current_turn-1):
+		self.turn_reports[self.current_turn-1] = "\n" + turn_report_string
+	else:
+		self.turn_reports[self.current_turn-1] += "\n" + turn_report_string
 
 func get_current_turn_report() -> String:
 	

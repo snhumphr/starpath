@@ -14,6 +14,7 @@ var highlighted: Dictionary = {}
 var selections: ActionSelection
 var action_queue: Array[FactionAction] = []
 var current_action: FactionAction
+var is_menu_open: bool = false
 
 var player_ids: Dictionary = {} #Dictionary that maps RPC ids to player ids
 var turn_orders: Dictionary = {}
@@ -342,6 +343,7 @@ func is_pos_along_starpath(pos: Vector2) -> Array[Vector2]:
 
 func open_menu() -> void:
 	
+	self.is_menu_open = true
 	var menu_scene = load("res://scenes/escape_menu.tscn")
 	var instance: PopupPanel = menu_scene.instantiate()
 	self.add_child(instance)
@@ -357,17 +359,24 @@ func _input(event: InputEvent) -> void:
 	
 	if self.is_visible_in_tree():
 		if event is InputEventKey and not event.pressed:
-			if event.is_action("clear"):
-				self.reset_selections()
-				self.update_map()
-			elif event.is_action("queue"):
-				if self.current_action != null:
-					self.emit_signal("add_action_to_queue", current_action)
-			elif event.is_action("submit"):
-				#self.attempt_submit_turn()
-				pass
-			elif event.is_action("menu"):
-				self.open_menu()
+			
+			if not self.is_menu_open:
+				print("AWOOOO")
+				if event.is_action("clear"):
+					self.reset_selections()
+					self.update_map()
+				elif event.is_action("queue"):
+					if self.current_action != null:
+						self.emit_signal("add_action_to_queue", current_action)
+				elif event.is_action("submit"):
+					#self.attempt_submit_turn()
+					pass
+				elif event.is_action("menu"):
+					self.open_menu()
+			else:
+				print("SNEK")
+				self.is_menu_open = false
+				#get_tree().call_group("popup", "queue_free")
 
 func _gui_input(event: InputEvent) -> void:
 	
