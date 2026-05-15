@@ -1,11 +1,18 @@
 -error when using default colour on a new profile
 -starmap starts scrunched up in the top left corner initially
 	-^couldn't replicate
+	-seems to happen only sometimes in multiplayer
 -says that you have an extra construction(probably counting other players')
 	-^couldn't replicate
+	-happened again in 2nd playtest
 -check that proliferate is being properly excluded by having swarm actions queued
 	-^couldn't replicate
 -if a minor faction wins it says they 'were' victorious instead of 'was' victorious
--MAJOR BUG: two different fleets of the same faction aren't fighting for some reason??? 
+-MAJOR BUG: two different fleets of the same faction aren't fighting for some reason???
 	-^couldn't replicate, but fixed a number of other combat bugs
+	-seems like it's fixed now
 -plus and minus don't work for changing number of ships selected
+-battle report should say how many ships on each side at the start of the battle
+-consider making action priority no longer prevent doing actions with higher priority after
+-when opponent(as host) rebuilds hive and gains tech level, the client says it happened the other way around
+	-player id #1(the host) seems to be getting all the tech levels???

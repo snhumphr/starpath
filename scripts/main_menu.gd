@@ -91,6 +91,7 @@ func _on_join_button_pressed() -> void:
 		file.store_string(self.join_IP)
 		
 		var peer = ENetMultiplayerPeer.new()
+		print("Trying to join server with IP Address = " + self.join_IP +"...")
 		var error: int = peer.create_client(self.join_IP, PORT)
 		multiplayer.multiplayer_peer = peer
 		for i in range(0, 60):
