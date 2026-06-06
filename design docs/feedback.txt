@@ -16,3 +16,4 @@
 -consider making action priority no longer prevent doing actions with higher priority after
 -when opponent(as host) rebuilds hive and gains tech level, the client says it happened the other way around
 	-player id #1(the host) seems to be getting all the tech levels???
+	-should be fixed now
