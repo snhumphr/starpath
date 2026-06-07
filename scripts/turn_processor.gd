@@ -126,7 +126,7 @@ func process_turn(new_galaxy: Galaxy, orders_dict: Dictionary) -> Array[Array]: 
 		current_priority += 1
 	
 	var combat_galaxy: Galaxy = new_galaxy.duplicate(true)
-	combat_galaxy.apply_changes(changes)
+	combat_galaxy.apply_changes(changes, false)
 	
 	#combat phase
 	

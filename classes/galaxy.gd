@@ -199,12 +199,13 @@ func destroy_ship(sys_id: int, owner_id: int) -> void:
 			self.ships.remove_at(i)
 			break
 
-func apply_changes(changes: Array[PackedInt32Array]) -> Array[String]:
+func apply_changes(changes: Array[PackedInt32Array], apply_research: bool) -> Array[String]:
 	
 	var turn_report: Array[String] = []
 	
 	for change in changes:
-		self.apply_change(change)
+		if change[0] != ChangeTypes.RESEARCH or apply_research == true:
+			self.apply_change(change)
 	
 	if self.setup_index >= self.setup_order.size():
 		self.in_setup = false

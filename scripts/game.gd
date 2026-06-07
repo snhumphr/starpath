@@ -176,7 +176,7 @@ func receive_orders(received_actions: Array[PackedStringArray], selected_system_
 @rpc("authority", "call_local", "reliable")
 func receive_turn(received_changes: Array[PackedInt32Array], turn_report: Array[String]) -> void:
 	print("New turn received!")
-	turn_report += self.galaxy.apply_changes(received_changes)
+	turn_report += self.galaxy.apply_changes(received_changes, true)
 	self.galaxy.add_turn_report(turn_report)
 	self.turn_orders = {}
 	self.action_queue = []
