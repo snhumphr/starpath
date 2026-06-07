@@ -78,8 +78,9 @@ func is_action_valid_base(actor_id: int, galaxy: Galaxy, selection: ActionSelect
 	for i in range(0, own_index):
 		var action: FactionAction = action_queue[0]
 		if action.action_priority > self.action_priority:
-			print("Action with higher priority already selected")
-			return false
+			#print("Action with higher priority already selected")
+			#return false
+			pass
 	
 	for i in range(0, selection.selected_systems.size()):
 		if not self.system_slots[i].is_system_valid(galaxy, selection, i, actor_id):
