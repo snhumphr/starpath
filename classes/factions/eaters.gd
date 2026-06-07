@@ -53,15 +53,6 @@ func load_actions() -> Array[FactionAction]:
 	
 	var eater_actions: Array[FactionAction] = []
 	
-	var demolish_action: BuildAction = BuildAction.new()
-	demolish_action.init()
-	demolish_action.action_name = "Demolish(DEBUG)"
-	demolish_action.action_category = "Basic"
-	demolish_action.reserves_selected_ships = false
-	demolish_action.construction_type = StarSystem.CONSTRUCTIONS.EMPTY
-	demolish_action.system_slots[0].allowed_constructions = [StarSystem.CONSTRUCTIONS.FORTRESS, StarSystem.CONSTRUCTIONS.LAB, StarSystem.CONSTRUCTIONS.SHIPYARD]
-	#eater_actions.append(demolish_action)
-	
 	var rebuild_action: BuildAction = BuildAction.new()
 	rebuild_action.init()
 	rebuild_action.action_name = "Rebuild Hive"
