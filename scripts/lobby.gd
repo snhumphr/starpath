@@ -31,6 +31,10 @@ func init_factions() -> Dictionary:
 	eater_faction.init(0) #TODO: check that this doesn't break anything!
 	new_factions[eater_faction.fac_id] = eater_faction
 	
+	var empire_faction: Faction = Empire.new()
+	empire_faction.init(0)
+	new_factions[empire_faction.fac_id] = empire_faction
+	
 	return new_factions
 
 func update_players_column():
