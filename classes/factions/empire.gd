@@ -140,8 +140,8 @@ func load_actions() -> Array[FactionAction]:
 	deploy_action.init()
 	deploy_action.action_name = "Deploy Ships"
 	deploy_action.action_category = "Military"
-	deploy_action.system_slots[0].own_ship_maximum = 30
-	deploy_action.short_desc = "Move 1-30 ships to/from an adjacent Fortress."
+	deploy_action.system_slots[0].own_ship_maximum = 20
+	deploy_action.short_desc = "Move 1-20 ships to/from an adjacent Fortress."
 	deploy_action.custom_validity_checks.append(self.deploy_action_check)
 	empire_actions.append(deploy_action)
 	
