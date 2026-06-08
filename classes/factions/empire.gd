@@ -122,6 +122,7 @@ func load_actions() -> Array[FactionAction]:
 	shipbuild_action.construction_type = StarSystem.CONSTRUCTIONS.SHIPYARD
 	shipbuild_action.ships_built = 0
 	shipbuild_action.short_desc = "Build 2 ships per Shipyard, half at 1 Shipyard"
+	shipbuild_action.custom_execution_actions.append(self.shipbuild_execution)
 	empire_actions.append(shipbuild_action)
 	
 	var fortress_action: BuildAction = BuildAction.new()
@@ -168,6 +169,35 @@ func load_actions() -> Array[FactionAction]:
 	empire_actions.append(research_action)
 
 	return empire_actions
+
+func shipbuild_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
+	
+	var execution_log: Array[String]  = []
+	
+	var shipyards: Array = galaxy.get_constructions_owned_by_player(actor_id)[StarSystem.CONSTRUCTIONS.SHIPYARD]
+	var own_faction: Faction = galaxy.factions[actor_id]
+	var num_yards: int = shipyards.size()
+	
+	var shipbuild_change: PackedInt32Array = PackedInt32Array([
+		Galaxy.ChangeTypes.ADD_SHIP, #change type 0
+		actor_id, #player id 1
+		own_faction.fac_id, #faction id 2
+		0, #system id 3
+		0, #dest id 4
+		1, #num ships 5
+		StarSystem.CONSTRUCTIONS.EMPTY, #new construction 6
+	])
+	
+	for id in shipyards:
+		var system: StarSystem = galaxy.get_system_from_id(id)
+		var new_change: PackedInt32Array = shipbuild_change.duplicate()
+		new_change[3] = id
+		if system.sys_id == selection.selected_systems[0].sys_id:
+			new_change[5] += num_yards
+		execution_log.append("Constructed " + str(new_change[5]) + " ships in System #" + str(system.sys_id))
+		changes.append(new_change)
+	
+	return execution_log
 
 func research_execution(executing_action: FactionAction, galaxy: Galaxy, selection: ActionSelection, actor_id: int, changes: Array[PackedInt32Array]) -> Array[String]:
 	
